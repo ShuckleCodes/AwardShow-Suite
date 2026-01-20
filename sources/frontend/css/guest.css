@@ -1,0 +1,98 @@
+/* Oscar Predictions - Guest Page Styles */
+
+.oscar-app {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+    min-height: 100vh;
+}
+
+.oscar-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #d4af37;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.oscar-card {
+    background: linear-gradient(145deg, #2a2a2a 0%, #1f1f1f 100%) !important;
+    border: 1px solid #3a3a3a;
+    border-radius: 12px !important;
+}
+
+.oscar-card:hover {
+    border-color: #d4af37;
+    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.15);
+}
+
+.completed-award {
+    border-color: #4caf50 !important;
+}
+
+.gold-text {
+    color: #d4af37 !important;
+    font-weight: 500;
+}
+
+.nominee-group {
+    margin-top: 0;
+}
+
+.nominee-radio {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    transition: all 0.2s ease;
+}
+
+.nominee-radio:hover {
+    background: rgba(212, 175, 55, 0.1);
+}
+
+.nominee-radio.v-item--active {
+    background: rgba(212, 175, 55, 0.2);
+    border-left: 3px solid #d4af37;
+}
+
+.nominee-name {
+    font-size: 1rem;
+    color: #ffffff;
+}
+
+.submit-btn {
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: #1a1a1a !important;
+}
+
+.submit-btn:hover:not(:disabled) {
+    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4);
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .oscar-title {
+        font-size: 1.2rem;
+    }
+
+    .nominee-name {
+        font-size: 0.9rem;
+    }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #d4af37;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #c9a227;
+}

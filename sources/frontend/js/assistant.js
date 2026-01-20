@@ -2,275 +2,299 @@ new Vue({
     el: '#app',
     vuetify: new Vuetify({
         theme: { dark: true },
-    }),        
+    }),
     data() {
         return {
             darkMode: true,
-            selectedTask: {
-                id: -1,
-                name: "-",
-                files: []
-            },
-            resetDialog: false,
-            general_files: [],
-            tasks: [],
-            contestants: [],
-            scores: [],
-            internalScores: {},
-            totalScores: {},
-            generalFileDialogs: {},
-            selectedTaskFileDialogs: {},
             websocket: null,
             websocketConnected: false,
-            ranks: {},
             scrollOptions: {
                 duration: 200,
                 offset: 0,
                 easing: 'easeInOutCubic'
             },
-            note: "",
-            textareaSlider: 50
+            // Oscar Predictions data
+            awards: [],
+            guests: [],
+            rooms: [],
+            winners: {},
+            predictionsLocked: false,
+            selectedAwardId: null,
+            deleteDialog: false,
+            // Room management
+            newRoomName: '',
+            newRoomCode: '',
+            // Edit guest rooms
+            editRoomsDialog: false,
+            editingGuest: null,
+            editingGuestRooms: [],
+            // New guest creation
+            newGuestName: '',
+            newGuestRooms: []
         }
     },
-    filters: {
-        removeExtension(val) {
-            return val.replace(/\.[^/.]+$/, "")
+    computed: {
+        awardOptions() {
+            return this.awards.map(a => ({
+                id: a.id,
+                name: a.name
+            }))
         },
-        replaceNewLines(val) {
-            return val.replaceAll("\n", "<br>")
+        selectedAward() {
+            if (!this.selectedAwardId) return null
+            return this.awards.find(a => a.id === this.selectedAwardId)
+        },
+        sortedGuests() {
+            return [...this.guests].sort((a, b) => (b.score || 0) - (a.score || 0))
         }
     },
     methods: {
-        showImage(image) {
-            this.sendMessage("showImage+++" + image)
-        },
-        resetInternalScores() {
-            for (tIndex in this.tasks) {
-                var task = this.tasks[tIndex]
-                if (!this.internalScores[task.id]) {
-                    this.$set(this.internalScores, task.id, {})
-                }
-                for (cIndex in this.contestants) {
-                    var contestant = this.contestants[cIndex]
-                    if (!this.internalScores[task.id][contestant.id]) {
-                        this.$set(this.internalScores[task.id], contestant.id, 0)
-                    }
-                }
-            }
-            this.updateInternalScores()
-        },
-        updateInternalScores() {
-            this.scores.forEach(score => {
-                if (this.internalScores[score.taskId]) {
-                    this.$set(this.internalScores[score.taskId], score.contestantId, score.score)
-                }
-            })
-            this.updateTotalScore()
-        },
-        updateTotalScore() {
-            this.totalScores = {}
-
-            this.contestants.forEach(contestant => {
-                this.$set(this.totalScores, contestant.id, 0)
-            })
-
-            for (var taskId in this.internalScores) {
-                for (var contestantId in this.internalScores[taskId]) {
-                    this.totalScores[contestantId] += parseFloat(this.internalScores[taskId][contestantId])
-                    this.totalScores[contestantId] = (this.totalScores[contestantId].toFixed(3) * 1)
-                }
-            }
-        },
         sendMessage(message) {
             if (this.websocketConnected) {
-                console.log(" sending msg: " + message)
+                console.log("sending msg: " + message)
                 this.websocket.send(message)
             }
         },
-        resetScores() {
-            axios.delete('/data/scores')
-            .then(response => { 
-                this.resetDialog = false
-                this.scores = []
-                this.internalScores = {}
-                this.resetInternalScores()
-                this.sendMessage("resetScores")
-            })
-        },
-        loadTasks() {
-            axios
-            .get('/data/tasks')
-            .then(response => {
-                if (!_.isEqual(response.data, this.tasks)) {
-                    console.log("Change in tasks detected")
-                    this.tasks = response.data
-                    this.selectTask(this.selectedTask.id)
-                }
-            })
-            .catch(e => {})
-            .then(() => {
-                setTimeout(() => this.loadTasks(), 1000)
-            })
-        },
-        selectTask(taskId) {
-            var newSelectedTask = this.tasks.filter(t => t.id == taskId)
-            if (newSelectedTask.length === 0) {
-                this.selectedTask = {
-                    id: -1,
-                    name: "-",
-                    files: []
-                }
-            } else {
-                this.selectedTask = JSON.parse(JSON.stringify(newSelectedTask[0]))
-                this.selectedTaskFileDialogs = {}
 
-                this.selectedTask.files.forEach(f => { if (f.file_type == "note") { this.$set(this.selectedTaskFileDialogs, f.name, false) }})
+        // Load data methods
+        loadAwards() {
+            axios.get('/data/awards')
+                .then(response => {
+                    this.awards = response.data
+                })
+                .catch(e => console.error('Error loading awards:', e))
+        },
+
+        loadGuests() {
+            axios.get('/data/guests_with_scores')
+                .then(response => {
+                    this.guests = response.data
+                })
+                .catch(e => console.error('Error loading guests:', e))
+        },
+
+        loadRooms() {
+            axios.get('/data/rooms')
+                .then(response => {
+                    this.rooms = response.data
+                })
+                .catch(e => console.error('Error loading rooms:', e))
+        },
+
+        loadAppState() {
+            axios.get('/data/app_state')
+                .then(response => {
+                    this.predictionsLocked = response.data.predictions_locked
+                    this.winners = response.data.winners || {}
+                })
+                .catch(e => console.error('Error loading app state:', e))
+        },
+
+        // Room management
+        createRoom() {
+            if (!this.newRoomName || !this.newRoomCode) return
+
+            axios.post('/data/rooms', {
+                name: this.newRoomName,
+                code: this.newRoomCode.toLowerCase().replace(/\s+/g, '')
+            })
+                .then(() => {
+                    this.newRoomName = ''
+                    this.newRoomCode = ''
+                    this.loadRooms()
+                    this.sendMessage('roomsUpdated')
+                })
+                .catch(e => console.error('Error creating room:', e))
+        },
+
+        deleteRoom(roomId) {
+            axios.delete('/data/rooms/' + roomId)
+                .then(() => {
+                    this.loadRooms()
+                    this.sendMessage('roomsUpdated')
+                })
+                .catch(e => console.error('Error deleting room:', e))
+        },
+
+        getRoomName(roomCode) {
+            const room = this.rooms.find(r => r.code === roomCode)
+            return room ? room.name : roomCode
+        },
+
+        // Prediction lock toggle
+        togglePredictionsLock() {
+            const action = this.predictionsLocked ? 'lockPredictions' : 'unlockPredictions'
+            this.sendMessage(action)
+
+            axios.post('/data/app_state/lock', {
+                locked: this.predictionsLocked
+            }).catch(e => console.error('Error toggling lock:', e))
+        },
+
+        // Award presentation
+        showAwardOnScreen() {
+            if (this.selectedAwardId) {
+                this.sendMessage('showAward+++' + this.selectedAwardId)
             }
         },
-        loadContestants() {
-            axios.get("/data/contestants")
-            .then(response => {
-                if (!_.isEqual(response.data, this.contestants)) {
-                    console.log("Change in contestants detected")
-                    this.contestants = response.data
-                }
-            })
-            .catch(e => {})
-            .then(() => {
-                setTimeout(() => this.loadContestants(), 1000)
-            })
-        },
-        loadGeneralFiles() {
-            axios.get("/data/general_files")
-            .then(response => {
 
-                if (!_.isEqual(response.data, this.general_files)) {
-                    console.log("Change in general files detected")
-                    this.general_files = response.data
-                    this.general_files.forEach(f => { if (f.file_type == "note") { this.$set(this.generalFileDialogs, f.name, false) }})
-                }
-            })
-            .catch(e => {})
-            .then(() => {
-                setTimeout(() => this.loadGeneralFiles(), 1000)
-            })
-        },
-        loadScores() {
-            axios.get("/data/scores")
-            .then(response => {
+        // Winner selection
+        selectWinner(awardId, nomineeId) {
+            this.$set(this.winners, awardId, nomineeId)
 
-                if (!_.isEqual(response.data, this.scores)) {
-                    console.log("Change in scores detected")
-                    this.scores = response.data
-                }
+            // Send WebSocket message to update screen
+            this.sendMessage('selectWinner+++' + awardId + '+++' + nomineeId)
+
+            // Save to backend
+            axios.post('/data/app_state/winner', {
+                award_id: awardId,
+                nominee_id: nomineeId
             })
-            .catch(e => {})
-            .then(() => {})
+                .then(() => {
+                    // Reload guests to update scores
+                    this.loadGuests()
+                })
+                .catch(e => console.error('Error setting winner:', e))
         },
-        loadNote() {
-            axios.get("/data/note")
-            .then(response => {
-                this.note = response.data.text
-            })
-            .catch(e => {})
-            .then(() => {})
+
+        clearWinner(awardId) {
+            this.$delete(this.winners, awardId)
+
+            // Send WebSocket message
+            this.sendMessage('clearWinner+++' + awardId)
+
+            // Save to backend
+            axios.delete('/data/app_state/winner/' + awardId)
+                .then(() => {
+                    this.loadGuests()
+                })
+                .catch(e => console.error('Error clearing winner:', e))
         },
-        updateNote() {
-            axios.post("/data/note", {
-                text: this.note
-            })
-            .then(() => {})
-            .catch(e => {})
-            .then(() => {})
+
+        // Helper methods
+        getNomineeName(awardId, nomineeId) {
+            if (!nomineeId) return '-'
+            const award = this.awards.find(a => a.id === awardId)
+            if (!award) return '-'
+            const nominee = award.nominees.find(n => n.id === nomineeId)
+            return nominee ? nominee.name.split(' (')[0].substring(0, 15) : '-'
         },
+
+        getPredictionColor(guest, awardId) {
+            const prediction = guest.predictions[awardId]
+            if (!prediction) return 'grey'
+
+            const winner = this.winners[awardId]
+            if (!winner) return 'primary'
+
+            return prediction === winner ? 'success' : 'error'
+        },
+
+        clearAllGuests() {
+            axios.delete('/data/guests')
+                .then(() => {
+                    this.guests = []
+                    this.deleteDialog = false
+                })
+                .catch(e => console.error('Error clearing guests:', e))
+        },
+
+        // WebSocket connection
         connectToWebsocket() {
             this.websocket = new ReconnectingWebSocket("ws://" + location.hostname + ":8001/ws")
 
             this.websocket.onopen = () => {
-                console.log('websocket connected')
+                console.log('WebSocket connected')
                 this.websocketConnected = true
             }
-                
-            this.websocket.onclose = (event) => {
-                console.log('websocket disconnected')
+
+            this.websocket.onclose = () => {
+                console.log('WebSocket disconnected')
                 this.websocketConnected = false
             }
-        },
-        ping() {
-            this.sendMessage('__ping__');
-            this.tm = setTimeout(function () {}, 5000)
-        },
-        pong() {
-            clearTimeout(this.tm)
-        },
-        getScore(taskId, contestantId) {
-            var filteredScores = this.scores.filter(s => (s.taskId == taskId) && (s.contestantId == contestantId))
-            var score = 0
-            if (filteredScores.length != 0) {
-                score = filteredScores[0].score
+
+            this.websocket.onmessage = (event) => {
+                const content = event.data.split("+++")
+                const action = content[0]
+
+                if (action === 'guestSubmitted') {
+                    // New guest submitted predictions
+                    this.loadGuests()
+                }
             }
-            return score
         },
-        setScore(taskId, contestantId, score) {
-            this.internalScores[taskId][contestantId] = score
-            this.updateScore(taskId, contestantId)
+
+        ping() {
+            this.sendMessage('__ping__')
         },
-        updateScore(taskId, contestantId) {
-            var score = this.internalScores[taskId][contestantId]
-            if (score !== '') {
-                this.updateTotalScore()
-                this.sendMessage("setScore+++" + taskId + "+++" + contestantId + "+++" + score + "+++" + this.totalScores[contestantId])
-            }                    
+
+        // Edit guest rooms
+        openEditRoomsDialog(guest) {
+            this.editingGuest = guest
+            this.editingGuestRooms = guest.rooms ? [...guest.rooms] : []
+            this.editRoomsDialog = true
         },
-        closeGeneralFileDialog(filename) {
-            this.$set(this.generalFileDialogs, filename, false)
+
+        saveGuestRooms() {
+            if (!this.editingGuest) return
+
+            axios.put('/data/guests/' + this.editingGuest.id, {
+                rooms: this.editingGuestRooms
+            })
+                .then(() => {
+                    this.editRoomsDialog = false
+                    this.loadGuests()
+                    this.sendMessage('guestsUpdated')
+                })
+                .catch(e => console.error('Error updating guest rooms:', e))
         },
-        closeSelectedTaskFileDialog(filename) {
-            this.$set(this.selectedTaskFileDialogs, filename, false)
+
+        // Create new guest
+        createGuest() {
+            if (!this.newGuestName) return
+
+            axios.post('/data/guests', {
+                name: this.newGuestName,
+                rooms: this.newGuestRooms,
+                predictions: {}
+            })
+                .then(() => {
+                    this.newGuestName = ''
+                    this.newGuestRooms = []
+                    this.loadGuests()
+                    this.sendMessage('guestsUpdated')
+                })
+                .catch(e => console.error('Error creating guest:', e))
+        },
+
+        // Delete a guest
+        deleteGuest(guestId) {
+            if (!confirm('Are you sure you want to delete this guest?')) return
+
+            axios.delete('/data/guests/' + guestId)
+                .then(() => {
+                    this.loadGuests()
+                    this.sendMessage('guestsUpdated')
+                })
+                .catch(e => console.error('Error deleting guest:', e))
         }
     },
     beforeMount() {
-        this.loadTasks()
-        this.loadContestants()
-        this.loadGeneralFiles()
-        this.loadScores()
-        this.loadNote()
+        this.loadAwards()
+        this.loadGuests()
+        this.loadRooms()
+        this.loadAppState()
         this.connectToWebsocket()
+
+        // Periodic refresh
+        setInterval(() => {
+            this.loadGuests()
+            this.loadAppState()
+        }, 10000)
     },
     watch: {
         darkMode(val) {
             this.$vuetify.theme.dark = val
-        },
-        tasks() {            
-            this.resetInternalScores()
-        },
-        contestants() {            
-            this.resetInternalScores()
-        },
-        scores() {
-            this.resetInternalScores()
-        }
-    },
-    computed: {
-        target () {
-            const value = this['element']
-            if (!isNaN(value)) return Number(value)
-            else return value
-        },
-        filteredGeneralFiles() {
-            return this.general_files.filter(file => file.name.toLowerCase() != "taskmaster")
-        },
-        sortedGeneralFiles() {
-            var result = [...this.filteredGeneralFiles]
-            return result.sort((a, b) => a.name.localeCompare(b.name))
-        },
-        sortedTasks() {
-            var result = [...this.tasks]
-            return result.sort((a, b) => a.name.localeCompare(b.name))
-        },
-        sortedContestants() {
-            var result = [...this.contestants]
-            return result.sort((a, b) => a.name.localeCompare(b.name))
         }
     }
 })

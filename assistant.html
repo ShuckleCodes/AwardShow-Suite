@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    
-    <title>Taskmaster Suite - Controller</title>
+    <title>Oscar Predictions - Admin Panel</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
@@ -10,7 +9,11 @@
     <link rel="shortcut icon" href="./sources/frontend/tm.ico">
     <meta name="viewport" content="width=device-width, initial-scale=0.6">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-
+    <style>
+        .gold-border { border: 2px solid #d4af37 !important; }
+        .gold-text { color: #d4af37 !important; }
+        .winner-highlight { background: linear-gradient(145deg, #d4af37 0%, #b8960c 100%) !important; color: #1a1a1a !important; }
+    </style>
 </head>
 <body>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.min.js"></script>
@@ -19,512 +22,468 @@
     <script src="https://cdn.jsdelivr.net/npm/vue-scrollto"></script>
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
     <div id="app">
-        <v-app dark style="font-family: 'veteran_typewriterregular', sans-serif; font-size: 150%;">
-                <v-app-bar app style="font-family: 'veteran_typewriterregular', sans-serif;">
-                    <v-avatar
-                        size="30"
-                        :color="websocketConnected ? 'success' : 'error'"
-                    >
-                        <v-icon v-if="websocketConnected">mdi-check</v-icon>
-                        <v-icon v-else>mdi-close</v-icon>
-                    </v-avatar>
-                    <v-spacer></v-spacer>
-                    <img class="mr-3" src="./sources/frontend/icon.png" width="50">
-                        <h3 class="font-weight-regular">
-                            Taskmaster Suite
-                        </h3>
-                    <v-spacer></v-spacer>
-                    <v-switch
-                        v-model="darkMode"
-                        dense
-                        hide-details
-                    >
-                        <template v-slot:label>
-                            <v-icon>mdi-moon-waxing-crescent</v-icon>
-                        </template>
-                    </v-switch>        
-                    <template v-slot:extension>
-                            <v-tabs
-                                centered
-                                grow
-                            >
-                                <v-tab @click="$vuetify.goTo($refs.basiccontrols, scrollOptions)">
-                                    Basic controls
-                                </v-tab>
-                                <v-tab @click="$vuetify.goTo($refs.generalfiles, scrollOptions)">
-                                    General files
-                                </v-tab>
-                                <v-tab @click="$vuetify.goTo($refs.scores, scrollOptions)">
-                                    Scores
-                                </v-tab>
-                                <v-tab @click="$vuetify.goTo($refs.taskfiles, scrollOptions)">
-                                    Task files
-                                </v-tab>
-                                <v-tab @click="$vuetify.goTo($refs.notes, scrollOptions)">
-                                    Notes
-                                </v-tab>
-                            </v-tabs>
+        <v-app dark>
+            <v-app-bar app color="#1a1a1a">
+                <v-avatar
+                    size="30"
+                    :color="websocketConnected ? 'success' : 'error'"
+                >
+                    <v-icon v-if="websocketConnected">mdi-check</v-icon>
+                    <v-icon v-else>mdi-close</v-icon>
+                </v-avatar>
+                <v-spacer></v-spacer>
+                <v-icon color="#d4af37" class="mr-2">mdi-trophy</v-icon>
+                <h3 class="font-weight-regular gold-text">
+                    Oscar Predictions Admin
+                </h3>
+                <v-spacer></v-spacer>
+                <v-switch
+                    v-model="darkMode"
+                    dense
+                    hide-details
+                >
+                    <template v-slot:label>
+                        <v-icon>mdi-moon-waxing-crescent</v-icon>
                     </template>
-                </v-app-bar>
-                <v-main>
-                    <!-- <v-btn color="success" @click="loadContestants">Reload Contestants</v-btn>
-                    <v-btn color="success" @click="loadTasks">Reload Tasks</v-btn>
-                    <v-btn color="success" @click="loadScores">Reload Scores</v-btn>
-                    <v-btn color="success" @click="loadGeneralFiles">Reload General Files</v-btn> -->
-                    <v-container fluid ref="basiccontrols">
-                        <h3 class="font-weight-regular">
-                            Basic controls
-                        </h3>
-                        <v-btn class="ma-1" color="primary" @click="sendMessage('showTaskmaster')">Show Taskmaster</v-btn>
-                        <v-btn class="ma-1" color="primary" @click="sendMessage('showScoreboard')">Show Scoreboard</v-btn>
-                        <v-btn class="ma-1" color="primary" @click="sendMessage('play')">Update Scoreboard</v-btn>
-                        <v-btn class="ma-1" color="primary" @click="sendMessage('stopSound')">Stop all sounds</v-btn>
-                    </v-container>
-                    <v-divider></v-divider>
-                    <v-container fluid ref="generalfiles">
-                        <h3 class="font-weight-regular">
-                            General files
-                        </h3>
-                        <v-layout row wrap class="mt-1">
-                            <v-card
-                                class="ma-2" 
-                                v-for="file in sortedGeneralFiles" 
-                                :key="file.file_source" 
-                                max-width="140"
-                            >
-                                <v-img
-                                    v-if="file.file_type == 'image'"
-                                    :src="'/home/data/' + file.file_source"
-                                    height="79"
-                                    width="140"
-                                    class="grey darken-4"
-                                    style="cursor: pointer"
-                                    @click="sendMessage('showImage+++./data/' + file.file_source)"
-                                ></v-img>
-                                <v-card 
-                                    v-else
-                                >
-                                    <v-dialog
-                                        v-if="file.file_type == 'note'"
-                                        v-model="generalFileDialogs[file.name]"
-                                        min-width="400"
-                                        max-width="700"
-                                        overlay-opacity="0.8"
-                                    >
-                                        <template v-slot:activator="{ on, attrs }">
-                                            <v-btn
-                                                color="primary"
-                                                v-bind="attrs"
-                                                v-on="on"
-                                                width="140"
-                                                height="79"
-                                                large
-                                                block 
-                                            >
-                                                Open Note
-                                                <v-icon right>mdi-note-text</v-icon>
-                                            </v-btn>
-                                        </template>
-                                    
-                                        <v-card>
-                                            <v-card-title>
-                                                Note: {{ file.file_source }}
-                                            </v-card-title>
-                                            <v-divider></v-divider>
-                                            <v-card-text class="mt-4">
-                                                <span :inner-html.prop="file.text | replaceNewLines"></span>
-                                            </v-card-text>
-                                            <v-divider></v-divider>
-                                            <v-card-actions>
-                                                <v-spacer></v-spacer>
-                                                <v-btn
-                                                    color="secondary"
-                                                    @click="closeGeneralFileDialog(file.name)"
-                                                >
-                                                    Close
-                                                </v-btn>
-                                            </v-card-actions>
-                                        </v-card>
-                                    </v-dialog>
-                                    <v-btn 
-                                        v-if="file.file_type == 'video'"
-                                        color="primary"
-                                        width="140"
-                                        height="79"
-                                        large
-                                        block 
-                                        @click="sendMessage('showVideo+++./data/' + file.file_source)"
-                                    >
-                                        Play Video
-                                        <v-icon right>mdi-video-vintage</v-icon>
-                                    </v-btn>
-                                    <div v-if="file.file_type == 'sound'">
-                                        <v-btn 
-                                            color="primary"
-                                            width="140"
-                                            height="39"
-                                            large
-                                            block 
-                                            @click="sendMessage('playSound+++./data/' + file.file_source)"
-                                        >
-                                            Play Sound
-                                            <v-icon right>mdi-music</v-icon>
-                                        </v-btn>
-                                        <v-btn 
-                                            color="primary"
-                                            width="140"
-                                            height="39"
-                                            large
-                                            block 
-                                            @click="sendMessage('loopSound+++./data/' + file.file_source)"
-                                        >
-                                            Loop Sound
-                                            <v-icon right>mdi-refresh</v-icon>
-                                        </v-btn>
-                                    </div>
-                                </v-card>
-                                <v-card-actions style="max-height: 50px; min-height: 50px; height: 50px;">
-                                    <v-spacer></v-spacer>
-                                    <div class="text-caption">{{ file.file_source }}</div>
-                                    <v-spacer></v-spacer>
-                                </v-card-actions>
-                            </v-card>
-                        </v-layout>
-                    </v-container>
-                    <v-divider></v-divider>
-                    <v-container fluid ref="scores">
-                        <v-layout row class="ma-1">
+                </v-switch>
+                <template v-slot:extension>
+                    <v-tabs centered grow>
+                        <v-tab @click="$vuetify.goTo($refs.controls, scrollOptions)">
+                            Controls
+                        </v-tab>
+                        <v-tab @click="$vuetify.goTo($refs.rooms, scrollOptions)">
+                            Rooms
+                        </v-tab>
+                        <v-tab @click="$vuetify.goTo($refs.awards, scrollOptions)">
+                            Awards
+                        </v-tab>
+                        <v-tab @click="$vuetify.goTo($refs.guests, scrollOptions)">
+                            Guests
+                        </v-tab>
+                    </v-tabs>
+                </template>
+            </v-app-bar>
 
-                            <h3 class="font-weight-regular">
-                                Scores
-                            </h3>
-                            <v-spacer></v-spacer>
-                            <v-dialog
-                                v-model="resetDialog"
-                                width="500"
-                                overlay-opacity="0.8"
-                            >
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-btn
-                                        color="primary"
-                                        v-bind="attrs"
-                                        v-on="on"
-                                        small
-                                    >
-                                        Reset all scores
-                                    </v-btn>
-                                </template>
-                            
-                                <v-card>
-                                    <v-card-title>
-                                        Reset all scores
-                                    </v-card-title>
-                                    <v-divider></v-divider>
-                                    <v-card-text class="mt-4">
-                                        Are you sure you want to reset all scores to 0?
-                                    </v-card-text>
-                                    <v-divider></v-divider>
-                                    <v-card-actions>
-                                        <v-spacer></v-spacer>
-                                        <v-btn
-                                            color="secondary"
-                                            @click="resetDialog = false"
-                                        >
-                                            Cancel
-                                        </v-btn>
-                                        <v-btn
-                                            color="primary"
-                                            @click="resetScores()"
-                                        >
-                                            Confirm
-                                        </v-btn>
-                                    </v-card-actions>
-                                </v-card>
-                            </v-dialog>
-                        </v-layout>
-                        <v-simple-table
-                            fixed-header
-                            height="300"
-                        >
-                            <template v-slot:default>
-                                <thead>
-                                    <tr>
-                                        <th class="text-left">
-                                            Task
-                                        </th>
-                                        <th v-for="item in sortedContestants" :key="item.name">
-                                            {{ item.name }}
-                                            <br>
-                                            Score: 
-                                            <v-chip
-                                                left
-                                                class="pa-2"
-                                                color="rgb(150, 47, 43)"
-                                                small
-                                            >
-                                                {{ totalScores[item.id] }}
-                                            </v-chip> 
-                                            <!-- Rank:
-                                            <v-chip
-                                                left
-                                                class="green pa-2"
-                                                small
-                                            >
-                                                4
-                                            </v-chip> -->
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr
-                                        v-for="(task, tIndex) in sortedTasks"
-                                        :key="task.id"
-                                    > 
-                                        <td>
-                                            <v-btn small color="primary" @click="selectTask(task.id)">
-                                                {{ task.name }}
-                                            </v-btn>
-                                        </td>
-                                        <td v-for="(contestant, cIndex) in sortedContestants" :key="contestant.id">
-                                            <v-row no-gutters style="width: 100px;">
-                                                <v-col>
-                                                    <v-text-field
-                                                        hide-details
-                                                        solo
-                                                        light
-                                                        height="40px"
-                                                        type="number"
-                                                        v-model="internalScores[task.id][contestant.id]"
-                                                        @input="updateScore(task.id, contestant.id)"
-                                                        style="min-width: 60px; max-width: 60px; border-top-right-radius: 0; border-bottom-right-radius: 0;"
-                                                        dense
-                                                    ></v-text-field>
-                                                </v-col>
-                                                <v-col>
-                                                    <v-menu
-                                                        bottom
-                                                        left
-                                                        offset-y
-                                                        close-on-content-click
-                                                    >
-                                                    <template v-slot:activator="{ on, attrs }">
-                                                        <v-btn 
-                                                            height="40px" 
-                                                            color="primary" 
-                                                            min-width="0" 
-                                                            width="20" 
-                                                            style="border-top-left-radius: 0; border-bottom-left-radius: 0;"
-                                                            v-bind="attrs"
-                                                            v-on="on"
-                                                            >
-                                                            <v-icon>
-                                                                mdi-numeric
-                                                            </v-icon>
-                                                        </v-btn>
-                                                    </template>
-                                                    <v-card color="grey" class="pa-2">
-                                                        <v-row dense>
-                                                            <v-col>
-                                                                <v-btn color="primary" min-width="0" max-width="20" width="20" @click="setScore(task.id, contestant.id, '0')">0</v-btn>
-                                                            </v-col>
-                                                            <v-col>
-                                                                <v-btn color="primary" min-width="0" max-width="20" width="20" @click="setScore(task.id, contestant.id, '1')">1</v-btn>
-                                                            </v-col>
-                                                            <v-col>
-                                                                <v-btn color="primary" min-width="0" max-width="20" width="20" @click="setScore(task.id, contestant.id, '2')">2</v-btn>
-                                                            </v-col>
-                                                        </v-row>
-                                                        <v-row dense>
-                                                            <v-col>
-                                                                <v-btn color="primary" min-width="0" max-width="20" width="20" @click="setScore(task.id, contestant.id, '3')">3</v-btn>
-                                                            </v-col>
-                                                            <v-col>
-                                                                <v-btn color="primary" min-width="0" max-width="20" width="20" @click="setScore(task.id, contestant.id, '4')">4</v-btn>
-                                                            </v-col>
-                                                            <v-col>
-                                                                <v-btn color="primary" min-width="0" max-width="20" width="20" @click="setScore(task.id, contestant.id, '5')">5</v-btn>
-                                                            </v-col>
-                                                        </v-row>
-                                                    </v-card>
-                                                </v-menu>
-                                            </v-col>
-                                            <v-spacer></v-spacer>
-                                            </v-row>
-                                            <!-- for (var i = 1; i <= contestants.length; i++) {
-                                                $("#buttons-" + task["id"] + "-" + contestant["id"]).append("<button class='btn btn-outline-primary quick-score-button' style='width: auto' onclick='setScore(" + task["id"] + ", " + contestant["id"] + ", " + i + ")'>" + i + "</button>")
-                                            } -->
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </template>
-                        </v-simple-table>
-                    </v-container>
-                    <v-divider></v-divider>
-                    <v-container fluid ref="taskfiles">
-                        <h3 class="font-weight-regular">
-                            Task files for: {{ selectedTask.name }}
-                        </h3>
-                        <v-layout row wrap class="mt-1">
-                            <v-card
-                                class="ma-2" 
-                                v-for="file in selectedTask.files" 
-                                :key="file.file_source" 
-                                max-width="140"
-                            >
-                                <v-img
-                                    v-if="file.file_type == 'image'"
-                                    :src="'/home/data/tasks/' + selectedTask.name + '/' + file.file_source"
-                                    height="79"
-                                    width="140"
-                                    class="grey darken-4"
-                                    style="cursor: pointer"
-                                    @click="sendMessage('showImage+++./data/tasks/' + selectedTask.name + '/' + file.file_source)"
-                                ></v-img>
-                                <v-card 
-                                    v-else
+            <v-main>
+                <!-- Basic Controls -->
+                <v-container fluid ref="controls">
+                    <h3 class="font-weight-regular gold-text mb-3">
+                        <v-icon color="#d4af37" class="mr-2">mdi-cog</v-icon>
+                        Display Controls
+                    </h3>
+                    <v-row>
+                        <v-col cols="12" md="6">
+                            <v-card class="pa-3" outlined>
+                                <v-card-subtitle>Screen Display</v-card-subtitle>
+                                <v-btn class="ma-1" color="primary" @click="sendMessage('showScoreboard')">
+                                    <v-icon left>mdi-view-list</v-icon>
+                                    Show Scoreboard
+                                </v-btn>
+                                <v-btn class="ma-1" color="primary" @click="sendMessage('showTaskmaster')">
+                                    <v-icon left>mdi-home</v-icon>
+                                    Show Logo
+                                </v-btn>
+                            </v-card>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                            <v-card class="pa-3" outlined>
+                                <v-card-subtitle>Prediction Lock</v-card-subtitle>
+                                <v-switch
+                                    v-model="predictionsLocked"
+                                    :label="predictionsLocked ? 'Predictions LOCKED' : 'Predictions OPEN'"
+                                    :color="predictionsLocked ? 'error' : 'success'"
+                                    @change="togglePredictionsLock"
+                                    inset
+                                ></v-switch>
+                                <v-chip
+                                    :color="predictionsLocked ? 'error' : 'success'"
+                                    class="mt-2"
                                 >
-                                    <v-dialog
-                                        v-if="file.file_type == 'note'"
-                                        v-model="selectedTaskFileDialogs[file.name]"
-                                        min-width="400"
-                                        max-width="700"
-                                        overlay-opacity="0.8"
+                                    <v-icon left small>{{ predictionsLocked ? 'mdi-lock' : 'mdi-lock-open' }}</v-icon>
+                                    {{ guests.length }} guests registered
+                                </v-chip>
+                            </v-card>
+                        </v-col>
+                    </v-row>
+                </v-container>
+
+                <v-divider class="my-4"></v-divider>
+
+                <!-- Rooms Section -->
+                <v-container fluid ref="rooms">
+                    <h3 class="font-weight-regular gold-text mb-3">
+                        <v-icon color="#d4af37" class="mr-2">mdi-door</v-icon>
+                        Room Management
+                    </h3>
+
+                    <v-row>
+                        <v-col cols="12" md="6">
+                            <v-card class="pa-3" outlined>
+                                <v-card-subtitle>Create New Room</v-card-subtitle>
+                                <v-text-field
+                                    v-model="newRoomName"
+                                    label="Room Name"
+                                    outlined
+                                    dense
+                                    placeholder="e.g., Family"
+                                ></v-text-field>
+                                <v-text-field
+                                    v-model="newRoomCode"
+                                    label="Room Code"
+                                    outlined
+                                    dense
+                                    placeholder="e.g., family"
+                                    hint="Lowercase, no spaces - used in URLs"
+                                ></v-text-field>
+                                <v-btn
+                                    color="primary"
+                                    @click="createRoom"
+                                    :disabled="!newRoomName || !newRoomCode"
+                                >
+                                    <v-icon left>mdi-plus</v-icon>
+                                    Create Room
+                                </v-btn>
+                            </v-card>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                            <v-card class="pa-3" outlined>
+                                <v-card-subtitle>Existing Rooms</v-card-subtitle>
+                                <v-list dense v-if="rooms.length > 0">
+                                    <v-list-item
+                                        v-for="room in rooms"
+                                        :key="room.id"
                                     >
-                                        <template v-slot:activator="{ on, attrs }">
-                                            <v-btn
-                                                color="primary"
-                                                v-bind="attrs"
-                                                v-on="on"
-                                                width="140"
-                                                height="79"
+                                        <v-list-item-content>
+                                            <v-list-item-title>{{ room.name }}</v-list-item-title>
+                                            <v-list-item-subtitle>Code: {{ room.code }}</v-list-item-subtitle>
+                                        </v-list-item-content>
+                                        <v-list-item-action>
+                                            <v-btn icon small color="error" @click="deleteRoom(room.id)">
+                                                <v-icon small>mdi-delete</v-icon>
+                                            </v-btn>
+                                        </v-list-item-action>
+                                    </v-list-item>
+                                </v-list>
+                                <div v-else class="text-center grey--text pa-4">
+                                    No rooms created yet
+                                </div>
+                            </v-card>
+                        </v-col>
+                    </v-row>
+                </v-container>
+
+                <v-divider class="my-4"></v-divider>
+
+                <!-- Awards Section -->
+                <v-container fluid ref="awards">
+                    <h3 class="font-weight-regular gold-text mb-3">
+                        <v-icon color="#d4af37" class="mr-2">mdi-trophy</v-icon>
+                        Award Presentation
+                    </h3>
+
+                    <v-select
+                        v-model="selectedAwardId"
+                        :items="awardOptions"
+                        item-text="name"
+                        item-value="id"
+                        label="Select Award to Present"
+                        outlined
+                        dense
+                        class="mb-4"
+                        @change="showAwardOnScreen"
+                    >
+                        <template v-slot:item="{ item }">
+                            <v-icon left :color="winners[item.id] ? '#d4af37' : 'grey'">
+                                {{ winners[item.id] ? 'mdi-trophy' : 'mdi-trophy-outline' }}
+                            </v-icon>
+                            {{ item.name }}
+                            <v-chip v-if="winners[item.id]" x-small class="ml-2" color="success">Winner Set</v-chip>
+                        </template>
+                    </v-select>
+
+                    <v-card v-if="selectedAward" outlined class="gold-border">
+                        <v-card-title class="gold-text">
+                            <v-icon left color="#d4af37">mdi-trophy</v-icon>
+                            {{ selectedAward.name }}
+                        </v-card-title>
+                        <v-card-subtitle>
+                            Click a nominee to select them as the winner
+                        </v-card-subtitle>
+                        <v-card-text>
+                            <v-row>
+                                <v-col
+                                    v-for="nominee in selectedAward.nominees"
+                                    :key="nominee.id"
+                                    cols="12"
+                                    sm="6"
+                                    md="4"
+                                >
+                                    <v-card
+                                        :class="{ 'winner-highlight': winners[selectedAward.id] === nominee.id }"
+                                        @click="selectWinner(selectedAward.id, nominee.id)"
+                                        outlined
+                                        hover
+                                        style="cursor: pointer;"
+                                    >
+                                        <v-card-text class="text-center">
+                                            <v-icon
+                                                v-if="winners[selectedAward.id] === nominee.id"
+                                                color="#1a1a1a"
                                                 large
-                                                block 
                                             >
-                                                Open Note
-                                                <v-icon right>mdi-note-text</v-icon>
-                                            </v-btn>
-                                        </template>
-                                    
-                                        <v-card>
-                                            <v-card-title>
-                                                Note: {{ file.file_source }}
-                                            </v-card-title>
-                                            <v-divider></v-divider>
-                                            <v-card-text class="mt-4">
-                                                <span :inner-html.prop="file.text | replaceNewLines"></span>
-                                            </v-card-text>
-                                            <v-divider></v-divider>
-                                            <v-card-actions>
-                                                <v-spacer></v-spacer>
-                                                <v-btn
-                                                    color="secondary"
-                                                    @click="closeSelectedTaskFileDialog(file.name)"
-                                                >
-                                                    Close
-                                                </v-btn>
-                                            </v-card-actions>
-                                        </v-card>
-                                    </v-dialog>
-                                    <v-btn 
-                                        v-if="file.file_type == 'video'"
-                                        color="primary"
-                                        width="140"
-                                        height="79"
-                                        large
-                                        block 
-                                        @click="sendMessage('showVideo+++./data/tasks/' + selectedTask.name + '/' + file.file_source)"
-                                    >
-                                        Play Video
-                                        <v-icon right>mdi-video-vintage</v-icon>
-                                    </v-btn>
-                                    <v-btn 
-                                        v-if="file.file_type == 'sound'"
-                                        color="primary"
-                                        width="140"
-                                        height="79"
-                                        large
-                                        block 
-                                        @click="sendMessage('playSound+++./data/' + file.file_source)"
-                                    >
-                                        Play Sound
-                                        <v-icon right>mdi-music</v-icon>
-                                    </v-btn>
-                                </v-card>
-                                <v-card-actions style="max-height: 50px; min-height: 50px; height: 50px;">
-                                    <v-spacer></v-spacer>
-                                    <div class="text-caption">{{ file.file_source }}</div>
-                                    <v-spacer></v-spacer>
-                                </v-card-actions>
-                            </v-card>
-                        <!-- </v-layout>
-                            <v-card class="ma-2" v-for="note in selectedTask.notes" :key="note.file" max-width="140">
-                                <v-card
-                                    height="50"
-                                    width="140"
-                                    class="justify-center d-flex align-center"
-                                >
-                                <v-dialog
-                                    v-model="note.dialog"
-                                    min-width="400"
-                                    max-width="700"
-                                    overlay-opacity="0.8"
-                                >
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-btn
-                                            color="primary"
-                                            v-bind="attrs"
-                                            v-on="on"
-                                            block
-                                            large
-                                        >
-                                            Open Note
-                                        </v-btn>
-                                    </template>
-                                
-                                    <v-card>
-                                        <v-card-title>
-                                            Note: {{ note.file }}
-                                        </v-card-title>
-                                        <v-divider></v-divider>
-                                        <v-card-text class="mt-4">
-                                            <span :inner-html.prop="note.text | replaceNewLines"></span>
+                                                mdi-trophy
+                                            </v-icon>
+                                            <div :class="{ 'black--text': winners[selectedAward.id] === nominee.id }">
+                                                {{ nominee.name }}
+                                            </div>
                                         </v-card-text>
-                                        <v-divider></v-divider>
-                                        <v-card-actions>
-                                            <v-spacer></v-spacer>
-                                            <v-btn
-                                                color="secondary"
-                                                @click="note.dialog = false"
-                                            >
-                                                Close
-                                            </v-btn>
-                                        </v-card-actions>
                                     </v-card>
-                                </v-dialog>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-btn
+                                v-if="winners[selectedAward.id]"
+                                text
+                                color="error"
+                                @click="clearWinner(selectedAward.id)"
+                            >
+                                <v-icon left>mdi-close</v-icon>
+                                Clear Winner
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+
+                    <!-- Winners Summary -->
+                    <v-card class="mt-4" outlined>
+                        <v-card-title>
+                            <v-icon left color="#d4af37">mdi-format-list-checks</v-icon>
+                            Winners Summary ({{ Object.keys(winners).length }} / {{ awards.length }})
+                        </v-card-title>
+                        <v-card-text>
+                            <v-chip
+                                v-for="award in awards"
+                                :key="award.id"
+                                :color="winners[award.id] ? 'success' : 'grey'"
+                                class="ma-1"
+                                small
+                            >
+                                {{ award.name }}
+                                <v-icon v-if="winners[award.id]" right small>mdi-check</v-icon>
+                            </v-chip>
+                        </v-card-text>
+                    </v-card>
+                </v-container>
+
+                <v-divider class="my-4"></v-divider>
+
+                <!-- Guests Section -->
+                <v-container fluid ref="guests">
+                    <h3 class="font-weight-regular gold-text mb-3">
+                        <v-icon color="#d4af37" class="mr-2">mdi-account-group</v-icon>
+                        Guests & Scores
+                    </h3>
+
+                    <v-row class="mb-4">
+                        <v-col cols="12" md="6">
+                            <v-card class="pa-3" outlined>
+                                <v-card-subtitle>Add New Guest</v-card-subtitle>
+                                <v-text-field
+                                    v-model="newGuestName"
+                                    label="Guest Name"
+                                    outlined
+                                    dense
+                                    placeholder="e.g., John Smith"
+                                ></v-text-field>
+                                <div class="mb-2">Assign to rooms:</div>
+                                <v-chip-group
+                                    v-model="newGuestRooms"
+                                    multiple
+                                    column
+                                >
+                                    <v-chip
+                                        v-for="room in rooms"
+                                        :key="room.code"
+                                        :value="room.code"
+                                        filter
+                                        outlined
+                                    >
+                                        {{ room.name }}
+                                    </v-chip>
+                                </v-chip-group>
+                                <v-btn
+                                    color="primary"
+                                    @click="createGuest"
+                                    :disabled="!newGuestName"
+                                    class="mt-2"
+                                >
+                                    <v-icon left>mdi-account-plus</v-icon>
+                                    Add Guest
+                                </v-btn>
                             </v-card>
-                                <v-card-actions>
-                                    <v-spacer></v-spacer>
-                                    <div class="text-caption">{{ note.file }}</div>
-                                    <v-spacer></v-spacer>
-                                </v-card-actions>
-                            </v-card> -->
-                        </v-layout>
-                    </v-container>
-                    <v-divider></v-divider>
-                    <v-container fluid ref="notes">
-                        <v-row>
-                            <v-col>
-                                <h3 class="font-weight-regular">
-                                    Notes
-                                </h3>
-                            </v-col>
-                            <v-spacer></v-spacer>
-                            <v-col>
-                                <v-slider v-model="textareaSlider" min="0" max="100" label="Note size"></v-slider>
-                            </v-col>
-                        </v-row>
-                        <v-textarea solo label="Enter your notes here" v-model="note" @change="updateNote" :height="textareaSlider * 4"></v-textarea>
-                    </v-container>
+                        </v-col>
+                        <v-col cols="12" md="6">
+                            <v-card class="pa-3" outlined>
+                                <v-card-subtitle>Guest Management</v-card-subtitle>
+                                <v-btn
+                                    color="primary"
+                                    class="ma-1"
+                                    @click="loadGuests"
+                                >
+                                    <v-icon left>mdi-refresh</v-icon>
+                                    Refresh Guests
+                                </v-btn>
+                                <div class="mt-3">
+                                    <v-chip color="info" class="mr-2">
+                                        {{ guests.length }} guests registered
+                                    </v-chip>
+                                </div>
+                            </v-card>
+                        </v-col>
+                    </v-row>
+
+                    <v-simple-table fixed-header height="400">
+                        <template v-slot:default>
+                            <thead>
+                                <tr>
+                                    <th class="text-left">Guest</th>
+                                    <th class="text-left">Rooms</th>
+                                    <th class="text-center">Score</th>
+                                    <th
+                                        v-for="award in awards"
+                                        :key="award.id"
+                                        class="text-center"
+                                        style="min-width: 120px;"
+                                    >
+                                        {{ award.name.replace('Best ', '') }}
+                                    </th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="guest in sortedGuests" :key="guest.id">
+                                    <td>
+                                        <v-avatar v-if="guest.photo" size="30" class="mr-2">
+                                            <v-img :src="'/home/data/' + guest.photo"></v-img>
+                                        </v-avatar>
+                                        {{ guest.name }}
+                                    </td>
+                                    <td>
+                                        <v-chip
+                                            v-for="roomCode in (guest.rooms || [])"
+                                            :key="roomCode"
+                                            x-small
+                                            class="mr-1"
+                                        >
+                                            {{ getRoomName(roomCode) }}
+                                        </v-chip>
+                                        <v-btn
+                                            icon
+                                            x-small
+                                            @click="openEditRoomsDialog(guest)"
+                                        >
+                                            <v-icon x-small>mdi-pencil</v-icon>
+                                        </v-btn>
+                                    </td>
+                                    <td class="text-center">
+                                        <v-chip
+                                            color="#d4af37"
+                                            text-color="black"
+                                            small
+                                        >
+                                            {{ guest.score || 0 }}
+                                        </v-chip>
+                                    </td>
+                                    <td
+                                        v-for="award in awards"
+                                        :key="award.id"
+                                        class="text-center"
+                                    >
+                                        <v-chip
+                                            :color="getPredictionColor(guest, award.id)"
+                                            x-small
+                                        >
+                                            {{ getNomineeName(award.id, guest.predictions[award.id]) }}
+                                        </v-chip>
+                                    </td>
+                                    <td class="text-center">
+                                        <v-btn
+                                            icon
+                                            small
+                                            color="error"
+                                            @click="deleteGuest(guest.id)"
+                                        >
+                                            <v-icon small>mdi-delete</v-icon>
+                                        </v-btn>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </template>
+                    </v-simple-table>
+
+                    <!-- Edit Guest Rooms Dialog -->
+                    <v-dialog v-model="editRoomsDialog" width="500">
+                        <v-card>
+                            <v-card-title>
+                                <v-icon left color="#d4af37">mdi-door</v-icon>
+                                Edit Rooms for {{ editingGuest ? editingGuest.name : '' }}
+                            </v-card-title>
+                            <v-card-text>
+                                <div class="mb-2">Select which rooms this guest belongs to:</div>
+                                <v-chip-group
+                                    v-model="editingGuestRooms"
+                                    multiple
+                                    column
+                                >
+                                    <v-chip
+                                        v-for="room in rooms"
+                                        :key="room.code"
+                                        :value="room.code"
+                                        filter
+                                        outlined
+                                    >
+                                        {{ room.name }}
+                                    </v-chip>
+                                </v-chip-group>
+                                <div v-if="rooms.length === 0" class="grey--text">
+                                    No rooms have been created yet. Create rooms in the Rooms tab first.
+                                </div>
+                            </v-card-text>
+                            <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn text @click="editRoomsDialog = false">Cancel</v-btn>
+                                <v-btn color="primary" @click="saveGuestRooms">Save</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
+
+                    <!-- Delete All Guests -->
+                    <v-dialog v-model="deleteDialog" width="400">
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                color="error"
+                                class="mt-4"
+                                v-bind="attrs"
+                                v-on="on"
+                                small
+                            >
+                                <v-icon left>mdi-delete</v-icon>
+                                Clear All Guests
+                            </v-btn>
+                        </template>
+                        <v-card>
+                            <v-card-title>Clear All Guests?</v-card-title>
+                            <v-card-text>
+                                This will permanently delete all guest data and predictions.
+                            </v-card-text>
+                            <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn text @click="deleteDialog = false">Cancel</v-btn>
+                                <v-btn color="error" @click="clearAllGuests">Delete All</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
+                </v-container>
             </v-main>
         </v-app>
     </div>

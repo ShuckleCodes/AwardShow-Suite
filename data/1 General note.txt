@@ -1,1 +1,0 @@
-Just some general note which can easily be altered by changing the respective file.

@@ -6,7 +6,7 @@ body {
 }
 
 #div-scoreboard {
-  background-image: url("../../../data/backgrounds/Typewriter.png");
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;

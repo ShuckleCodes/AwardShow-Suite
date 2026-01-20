@@ -1,48 +1,396 @@
-
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
+    <head>
+        <meta charset="utf-8">
+        <title>Oscar Predictions - Display</title>
+        <link rel="shortcut icon" href="./sources/frontend/tm.ico">
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link href="./sources/frontend/css/style.css" rel="stylesheet" type="text/css">
+        <link href="./sources/frontend/fonts/veteran_typewriter.css" rel="stylesheet" type="text/css">
+        <style>
+            /* Oscar-themed styles */
+            .oscar-bg {
+                background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            }
 
-		<title>Taskmaster Suite - Screen</title>
+            /* Background images for each view - add your images to data/Backgrounds/ */
+            #div-taskmaster {
+                background: url('/home/data/Backgrounds/bg-logo.png') center center / cover no-repeat,
+                            linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            }
 
-		<link rel="shortcut icon" href="./sources/frontend/tm.ico">
-		<!-- <link rel="preload" as="font" type="font/woff2" crossorigin href="./fonts/veteran_typewriter-webfont.woff2"> -->
-		<link href="./sources/frontend/css/style.css" rel="stylesheet" type="text/css">
-		<link href="./sources/frontend/fonts/veteran_typewriter.css" rel="stylesheet" type="text/css">
-        
-	</head>
-    
-	<body>
-        <div id="div-taskmaster" class="div-containers" style="display: block;">
-            <image src="./data/backgrounds/taskmaster.png" style="width: 100%; height: 100%;"></image>
-            <div id="inner-taskmaster" style="margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-image: url('./data/backgrounds/taskmaster.png'); transform: scale(1.25)">
-                <image id="image-taskmaster" style="position: absolute; transform: translate(-50%, -60%); height: 500px; width: 400px"></image>
-                <image src="./data/backgrounds/taskmaster_frame.png" style="position: absolute; transform: translate(-50%, -60%); height: 600px; width: 500px"></image>
-            </div>
+            #div-award {
+                background: url('/home/data/Backgrounds/bg-nominees.png') center center / cover no-repeat,
+                            linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 40px;
+            }
+
+            #div-scoreboard {
+                background: url('/home/data/Backgrounds/bg-leaderboard.png') center center / cover no-repeat,
+                            linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            }
+
+            .award-title {
+                font-family: 'Jost', 'Futura PT', sans-serif;
+                font-weight: 600;
+                font-size: 4rem;
+                color: #d4af37;
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+                margin-bottom: 40px;
+                text-align: center;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+            }
+
+            .nominees-grid {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 30px;
+                max-width: 1600px;
+            }
+
+            .nominee-card {
+                background: linear-gradient(145deg, #2a2a2a 0%, #1f1f1f 100%);
+                border: 3px solid #3a3a3a;
+                border-radius: 15px;
+                padding: 25px;
+                text-align: center;
+                min-width: 250px;
+                max-width: 300px;
+                transition: all 0.5s ease;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .nominee-card:hover {
+                border-color: #d4af37;
+                transform: scale(1.02);
+            }
+
+            .nominee-card.winner {
+                border-color: #d4af37;
+                background: linear-gradient(145deg, #d4af37 0%, #b8960c 100%);
+                transform: scale(1.1);
+                box-shadow: 0 0 40px rgba(212, 175, 55, 0.6);
+                animation: winner-glow 1.5s ease-in-out infinite alternate;
+            }
+
+            @keyframes winner-glow {
+                from {
+                    box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+                }
+                to {
+                    box-shadow: 0 0 60px rgba(212, 175, 55, 0.8);
+                }
+            }
+
+            .nominee-card.winner .nominee-name {
+                color: #1a1a1a;
+                font-weight: bold;
+            }
+
+            .nominee-card.winner .trophy-icon {
+                display: block;
+            }
+
+            .trophy-icon {
+                display: none;
+                font-size: 3rem;
+                color: #1a1a1a;
+                margin-bottom: 10px;
+            }
+
+            .nominee-image {
+                width: 150px;
+                height: 150px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 3px solid #d4af37;
+                margin-bottom: 15px;
+                background: #333;
+            }
+
+            .nominee-name {
+                font-family: 'Jost', 'Futura PT', sans-serif;
+                font-weight: 500;
+                font-size: 1.4rem;
+                color: #ffffff;
+                margin: 0;
+            }
+
+            #div-scoreboard-2 {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                height: 65vh; /* Leave space for table at bottom */
+                padding-top: 20px;
+            }
+
+            #inner-scoreboard {
+                position: relative;
+                height: 250px;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .guest-card {
+                background: linear-gradient(145deg, #2a2a2a 0%, #1f1f1f 100%);
+                border: 2px solid #3a3a3a;
+                border-radius: 15px;
+                padding: 20px 25px;
+                margin: 15px;
+                text-align: center;
+                min-width: 180px;
+                transition: all 0.3s ease;
+            }
+
+            .guest-card.leader {
+                border-color: #d4af37;
+                transform: scale(1.1);
+                box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+            }
+
+            .guest-photo {
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 3px solid #d4af37;
+                margin-bottom: 10px;
+                background: #333;
+            }
+
+            .guest-name {
+                font-family: 'Jost', 'Futura PT', sans-serif;
+                font-weight: 500;
+                font-size: 1.5rem;
+                color: #ffffff;
+                margin: 10px 0;
+            }
+
+            .guest-score {
+                font-family: 'Jost', 'Futura PT', sans-serif;
+                font-weight: 700;
+                font-size: 3rem;
+                color: #d4af37;
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            }
+
+            /* Room selector */
+            #room-selector {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 1000;
+                background: rgba(0,0,0,0.8);
+                padding: 10px 15px;
+                border-radius: 10px;
+                border: 2px solid #d4af37;
+            }
+
+            #room-selector label {
+                font-family: 'Jost', 'Futura PT', sans-serif;
+                font-weight: 500;
+                color: #d4af37;
+                margin-right: 10px;
+            }
+
+            #room-select {
+                font-family: 'Jost', 'Futura PT', sans-serif;
+                background: #2a2a2a;
+                color: #fff;
+                border: 1px solid #d4af37;
+                padding: 5px 10px;
+                border-radius: 5px;
+                font-size: 1rem;
+            }
+
+            .scoreboard-room-title {
+                font-family: 'Jost', 'Futura PT', sans-serif;
+                font-weight: 400;
+                font-size: 1.5rem;
+                color: #888;
+                margin-bottom: 10px;
+            }
+
+            /* Scores Table - matches admin panel styling */
+            #scores-table-container {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: #1e1e1e;
+                border-top: 2px solid #d4af37;
+                max-height: 35vh;
+                overflow-y: auto;
+                z-index: 100;
+            }
+
+            .scores-table {
+                width: 100%;
+                border-collapse: collapse;
+                font-family: 'Roboto', 'Segoe UI', sans-serif;
+                background: #1e1e1e;
+            }
+
+            .scores-table th {
+                background: #2d2d2d;
+                color: #d4af37;
+                padding: 8px 6px;
+                text-align: center;
+                font-size: 0.75rem;
+                font-weight: 500;
+                white-space: nowrap;
+                position: sticky;
+                top: 0;
+                z-index: 1;
+                border-bottom: 1px solid #3a3a3a;
+            }
+
+            .scores-table th.guest-col {
+                text-align: left;
+                min-width: 140px;
+                padding-left: 12px;
+            }
+
+            .scores-table td {
+                padding: 6px;
+                border-bottom: 1px solid #3a3a3a;
+                color: #fff;
+                text-align: center;
+                font-size: 0.8rem;
+            }
+
+            .scores-table td.guest-col {
+                text-align: left;
+                white-space: nowrap;
+                padding-left: 12px;
+            }
+
+            .scores-table tbody tr:hover {
+                background: rgba(255, 255, 255, 0.05);
+            }
+
+            .scores-table .prediction-chip {
+                padding: 2px 6px;
+                border-radius: 10px;
+                font-size: 0.7rem;
+                display: inline-block;
+                max-width: 80px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .scores-table .prediction-chip.correct {
+                background: #4caf50;
+                color: #fff;
+            }
+
+            .scores-table .prediction-chip.incorrect {
+                background: #f44336;
+                color: #fff;
+            }
+
+            .scores-table .prediction-chip.pending {
+                background: #2196f3;
+                color: #fff;
+            }
+
+            .scores-table .prediction-chip.none {
+                background: #555;
+                color: #999;
+            }
+
+            .scores-table .guest-avatar {
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 2px solid #d4af37;
+                margin-right: 10px;
+                vertical-align: middle;
+            }
+        </style>
+    </head>
+
+    <body>
+        <!-- Room Selector -->
+        <div id="room-selector" style="display: none;">
+            <label for="room-select">Room:</label>
+            <select id="room-select" onchange="switchRoom(this.value)">
+                <option value="">All Guests</option>
+            </select>
         </div>
-        <div id="div-scoreboard" class="div-containers">
-            <div id="div-scoreboard-2" style="width: 100%; height: 100%; position: absolute;">
-                <div id="inner-scoreboard">
+
+        <div id="div-taskmaster" class="div-containers oscar-bg" style="display: block;">
+            <div id="inner-taskmaster" style="margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                <div style="text-align: center;">
+                    <div style="font-family: 'Jost', 'Futura PT', sans-serif; font-weight: 600; font-size: 5rem; color: #d4af37; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); text-transform: uppercase; letter-spacing: 0.1em;">
+                        Oscar Predictions
+                    </div>
+                    <div style="font-family: 'Jost', 'Futura PT', sans-serif; font-weight: 300; font-size: 2rem; color: #888; margin-top: 20px;">
+                        Who will win big tonight?
+                    </div>
                 </div>
             </div>
         </div>
+
+        <div id="div-award" class="div-containers">
+            <h1 id="award-title" class="award-title"></h1>
+            <div id="nominees-grid" class="nominees-grid"></div>
+        </div>
+
+        <div id="div-scoreboard" class="div-containers">
+            <div id="div-scoreboard-2">
+                <h1 style="text-align: center; font-family: 'Jost', 'Futura PT', sans-serif; font-weight: 600; font-size: 3rem; color: #d4af37; margin: 20px 0; text-transform: uppercase; letter-spacing: 0.1em;">
+                    Leaderboard
+                </h1>
+                <div id="scoreboard-room-name" class="scoreboard-room-title" style="text-align: center;"></div>
+                <div id="inner-scoreboard"></div>
+            </div>
+        </div>
+
+        <!-- Scores Table (fixed at bottom) -->
+        <div id="scores-table-container" style="display: none;">
+            <table id="scores-table" class="scores-table">
+                <thead>
+                    <tr id="scores-table-header">
+                        <th class="guest-col">Guest</th>
+                    </tr>
+                </thead>
+                <tbody id="scores-table-body">
+                </tbody>
+            </table>
+        </div>
+
         <div id="div-image" class="div-containers">
             <image id="image" style="width: 100%; height: 100%"></image>
         </div>
+
         <div id="div-video" class="div-containers" style="background-color: black;">
             <video id="video" style="width: 100%; height: 100%">
                 <source id="video-src" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
         </div>
-        <div id="div-no-connection" style="position: absolute; display: block; margin: 100px; color: red; background-color: white; opacity: 0.8; padding: 20px">
-            <h1>
-                No connection
-            </h1>
-            The connection to the server could not be established! Ensure that the server.exe has been started in the same network in which you're trying to connect and that you are connecting to the website displayed in the window which is shown when you start the server.exe.
+
+        <div id="div-no-connection" style="position: absolute; display: block; margin: 100px; color: #d4af37; background-color: rgba(0,0,0,0.9); padding: 20px; border: 2px solid #d4af37; border-radius: 10px;">
+            <h1>No Connection</h1>
+            The connection to the server could not be established. Make sure the server is running.
         </div>
+
         <script src="./sources/frontend/js/reconnecting-websocket.min.js"></script>
-		<script src="./sources/frontend/js/screen.js" type="text/javascript"></script>
-	</body>
+        <script src="./sources/frontend/js/screen.js" type="text/javascript"></script>
+    </body>
 </html>

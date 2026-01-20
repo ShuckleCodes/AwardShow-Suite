@@ -1,0 +1,284 @@
+{
+  "awards": [
+    {
+      "id": 1,
+      "name": "Best Picture",
+      "nominees": [
+        { "id": 1, "name": "One Battle After Another", "image": "onebattleafteranother.jpg" },
+        { "id": 2, "name": "Sinners", "image": "sinners.jpg" },
+        { "id": 3, "name": "Hamnet", "image": "hamnet.jpg" },
+        { "id": 4, "name": "Sentimental Value", "image": "sentimentalvalue.jpg" },
+        { "id": 5, "name": "Marty Supreme", "image": "martysupreme.jpg" },
+        { "id": 6, "name": "Frankenstein", "image": "frankenstein.jpg" },
+        { "id": 7, "name": "The Secret Agent", "image": "thesecretagent.jpg" },
+        { "id": 8, "name": "Bugonia", "image": "bugonia.jpg" },
+        { "id": 9, "name": "Train Dreams", "image": "traindreams.jpg" },
+        { "id": 10, "name": "F1", "image": "f1.jpg" }
+      ]
+    },
+
+    {
+      "id": 2,
+      "name": "Best Director",
+      "nominees": [
+        { "id": 1, "name": "Paul Thomas Anderson (One Battle After Another)", "image": "paulthomasanderson.jpg" },
+        { "id": 2, "name": "Ryan Coogler (Sinners)", "image": "ryancoogler.jpg" },
+        { "id": 3, "name": "Chloé Zhao (Hamnet)", "image": "chloezhao.jpg" },
+        { "id": 4, "name": "Joachim Trier (Sentimental Value)", "image": "joachimtrier.jpg" },
+        { "id": 5, "name": "Josh Safdie (Marty Supreme)", "image": "joshsafdie.jpg" }
+      ]
+    },
+
+    {
+      "id": 3,
+      "name": "Best Actor",
+      "nominees": [
+        { "id": 1, "name": "Timothée Chalamet (Marty Supreme)", "image": "timotheechalamet.jpg" },
+        { "id": 2, "name": "Leonardo DiCaprio (One Battle After Another)", "image": "leonardodicaprio.jpg" },
+        { "id": 3, "name": "Michael B. Jordan (Sinners)", "image": "michaelbjordan.jpg" },
+        { "id": 4, "name": "Wagner Moura (The Secret Agent)", "image": "wagnermoura.jpg" },
+        { "id": 5, "name": "Jesse Plemons (Bugonia)", "image": "jesseplemons.jpg" }
+      ]
+    },
+
+    {
+      "id": 4,
+      "name": "Best Actress",
+      "nominees": [
+        { "id": 1, "name": "Jessie Buckley (Hamnet)", "image": "jessiebuckley.jpg" },
+        { "id": 2, "name": "Renate Reinsve (Sentimental Value)", "image": "renatereinsve.jpg" },
+        { "id": 3, "name": "Rose Byrne (If I Had Legs I’d Kick You)", "image": "rosebyrne.jpg" },
+        { "id": 4, "name": "Chase Infiniti (One Battle After Another)", "image": "chaseinfiniti.jpg" },
+        { "id": 5, "name": "Emma Stone (Bugonia)", "image": "emmastone.jpg" }
+      ]
+    },
+
+    {
+      "id": 5,
+      "name": "Best Supporting Actor",
+      "nominees": [
+        { "id": 1, "name": "Jacob Elordi (Frankenstein)", "image": "jacobelordi.jpg" },
+        { "id": 2, "name": "Paul Mescal (Hamnet)", "image": "paulmescal.jpg" },
+        { "id": 3, "name": "Sean Penn (One Battle After Another)", "image": "seanpenn.jpg" },
+        { "id": 4, "name": "Stellan Skarsgård (Sentimental Value)", "image": "stellanskarsgard.jpg" },
+        { "id": 5, "name": "Benicio del Toro (One Battle After Another)", "image": "beniciodeltoro.jpg" }
+      ]
+    },
+
+    {
+      "id": 6,
+      "name": "Best Supporting Actress",
+      "nominees": [
+        { "id": 1, "name": "Teyana Taylor (One Battle After Another)", "image": "teyanataylor.jpg" },
+        { "id": 2, "name": "Ariana Grande (Wicked: For Good)", "image": "arianagrande.jpg" },
+        { "id": 3, "name": "Amy Madigan (Weapons)", "image": "amymadigan.jpg" },
+        { "id": 4, "name": "Elle Fanning (Sentimental Value)", "image": "ellefanning.jpg" },
+        { "id": 5, "name": "Inga Ibsdotter Lilleaas (Sentimental Value)", "image": "ingaibsdotterlilleaas.jpg" }
+      ]
+    },
+
+    {
+      "id": 7,
+      "name": "Best Original Screenplay",
+      "nominees": [
+        { "id": 1, "name": "Sentimental Value", "image": "sentimentalvalue.jpg" },
+        { "id": 2, "name": "It Was Just an Accident", "image": "itwasjustanaccident.jpg" },
+        { "id": 3, "name": "Marty Supreme", "image": "martysupreme.jpg" },
+        { "id": 4, "name": "Sinners", "image": "sinners.jpg" },
+        { "id": 5, "name": "The Secret Agent", "image": "thesecretagent.jpg" }
+      ]
+    },
+
+    {
+      "id": 8,
+      "name": "Best Adapted Screenplay",
+      "nominees": [
+        { "id": 1, "name": "One Battle After Another", "image": "onebattleafteranother.jpg" },
+        { "id": 2, "name": "Hamnet", "image": "hamnet.jpg" },
+        { "id": 3, "name": "Train Dreams", "image": "traindreams.jpg" },
+        { "id": 4, "name": "Bugonia", "image": "bugonia.jpg" },
+        { "id": 5, "name": "No Other Choice", "image": "nootherchoice.jpg" }
+      ]
+    },
+
+    {
+      "id": 9,
+      "name": "Best Animated Feature",
+      "nominees": [
+        { "id": 1, "name": "KPop Demon Hunters", "image": "kpopdemonhunters.jpg" },
+        { "id": 2, "name": "Elio", "image": "elio.jpg" },
+        { "id": 3, "name": "Arco", "image": "arco.jpg" },
+        { "id": 4, "name": "Demon Slayer: Infinity Castle", "image": "demonslayerinfinitycastle.jpg" },
+        { "id": 5, "name": "Zootopia 2", "image": "zootopia2.jpg" }
+      ]
+    },
+
+    {
+      "id": 10,
+      "name": "Best International Feature",
+      "nominees": [
+        { "id": 1, "name": "Sentimental Value", "image": "sentimentalvalue.jpg" },
+        { "id": 2, "name": "It Was Just an Accident", "image": "itwasjustanaccident.jpg" },
+        { "id": 3, "name": "No Other Choice", "image": "nootherchoice.jpg" },
+        { "id": 4, "name": "The Secret Agent", "image": "thesecretagent.jpg" },
+        { "id": 5, "name": "Sirāt", "image": "sirat.jpg" }
+      ]
+    },
+
+    {
+      "id": 11,
+      "name": "Best Original Score",
+      "nominees": [
+        { "id": 1, "name": "Sinners", "image": "sinners.jpg" },
+        { "id": 2, "name": "Hamnet", "image": "hamnet.jpg" },
+        { "id": 3, "name": "Frankenstein", "image": "frankenstein.jpg" },
+        { "id": 4, "name": "One Battle After Another", "image": "onebattleafteranother.jpg" },
+        { "id": 5, "name": "Jay Kelly", "image": "jaykelly.jpg" }
+      ]
+    },
+
+    {
+      "id": 12,
+      "name": "Best Original Song",
+      "nominees": [
+        { "id": 1, "name": "Golden (KPop Demon Hunters)", "image": "kpopdemonhunters.jpg" },
+        { "id": 2, "name": "I Lied to You (Sinners)", "image": "sinners.jpg" },
+        { "id": 3, "name": "The Girl in the Bubble (Wicked: For Good)", "image": "wickedforgood.jpg" },
+        { "id": 4, "name": "Dear Me (Diane Warren: Relentless)", "image": "dianewarrenrelentless.jpg" },
+        { "id": 5, "name": "Train Dreams (Train Dreams)", "image": "traindreams.jpg" }
+      ]
+    },
+
+    {
+      "id": 13,
+      "name": "Best Cinematography",
+      "nominees": [
+        { "id": 1, "name": "One Battle After Another", "image": "onebattleafteranother.jpg" },
+        { "id": 2, "name": "Sinners", "image": "sinners.jpg" },
+        { "id": 3, "name": "Train Dreams", "image": "traindreams.jpg" },
+        { "id": 4, "name": "Marty Supreme", "image": "martysupreme.jpg" },
+        { "id": 5, "name": "Hamnet", "image": "hamnet.jpg" }
+      ]
+    },
+
+    {
+      "id": 14,
+      "name": "Best Production Design",
+      "nominees": [
+        { "id": 1, "name": "One Battle After Another", "image": "onebattleafteranother.jpg" },
+        { "id": 2, "name": "Sinners", "image": "sinners.jpg" },
+        { "id": 3, "name": "Wicked: For Good", "image": "wickedforgood.jpg" },
+        { "id": 4, "name": "Marty Supreme", "image": "martysupreme.jpg" },
+        { "id": 5, "name": "Frankenstein", "image": "frankenstein.jpg" }
+      ]
+    },
+
+    {
+      "id": 15,
+      "name": "Best Costume Design",
+      "nominees": [
+        { "id": 1, "name": "Wicked: For Good", "image": "wickedforgood.jpg" },
+        { "id": 2, "name": "One Battle After Another", "image": "onebattleafteranother.jpg" },
+        { "id": 3, "name": "Sinners", "image": "sinners.jpg" },
+        { "id": 4, "name": "Frankenstein", "image": "frankenstein.jpg" },
+        { "id": 5, "name": "Hedda", "image": "hedda.jpg" }
+      ]
+    },
+
+    {
+      "id": 16,
+      "name": "Best Film Editing",
+      "nominees": [
+        { "id": 1, "name": "One Battle After Another", "image": "onebattleafteranother.jpg" },
+        { "id": 2, "name": "Sinners", "image": "sinners.jpg" },
+        { "id": 3, "name": "Marty Supreme", "image": "martysupreme.jpg" },
+        { "id": 4, "name": "Frankenstein", "image": "frankenstein.jpg" },
+        { "id": 5, "name": "Train Dreams", "image": "traindreams.jpg" }
+      ]
+    },
+
+    {
+      "id": 17,
+      "name": "Best Sound",
+      "nominees": [
+        { "id": 1, "name": "F1", "image": "f1.jpg" },
+        { "id": 2, "name": "One Battle After Another", "image": "onebattleafteranother.jpg" },
+        { "id": 3, "name": "Sinners", "image": "sinners.jpg" },
+        { "id": 4, "name": "Frankenstein", "image": "frankenstein.jpg" },
+        { "id": 5, "name": "Train Dreams", "image": "traindreams.jpg" }
+      ]
+    },
+
+    {
+      "id": 18,
+      "name": "Best Visual Effects",
+      "nominees": [
+        { "id": 1, "name": "Avatar: Fire and Ash", "image": "avatarfireandash.jpg" },
+        { "id": 2, "name": "Frankenstein", "image": "frankenstein.jpg" },
+        { "id": 3, "name": "F1", "image": "f1.jpg" },
+        { "id": 4, "name": "Sinners", "image": "sinners.jpg" },
+        { "id": 5, "name": "Marty Supreme", "image": "martysupreme.jpg" }
+      ]
+    },
+
+    {
+      "id": 19,
+      "name": "Best Makeup and Hairstyling",
+      "nominees": [
+        { "id": 1, "name": "Frankenstein", "image": "frankenstein.jpg" },
+        { "id": 2, "name": "One Battle After Another", "image": "onebattleafteranother.jpg" },
+        { "id": 3, "name": "Sinners", "image": "sinners.jpg" },
+        { "id": 4, "name": "Wicked: For Good", "image": "wickedforgood.jpg" },
+        { "id": 5, "name": "Bugonia", "image": "bugonia.jpg" }
+      ]
+    },
+
+    {
+      "id": 20,
+      "name": "Best Documentary Feature",
+      "nominees": [
+        { "id": 1, "name": "Diane Warren: Relentless", "image": "dianewarrenrelentless.jpg" },
+        { "id": 2, "name": "Still Working", "image": "stillworking.jpg" },
+        { "id": 3, "name": "Silver Dollar Road", "image": "silverdollarroad.jpg" },
+        { "id": 4, "name": "Mountain Queen", "image": "mountainqueen.jpg" },
+        { "id": 5, "name": "Union", "image": "union.jpg" }
+      ]
+    },
+
+    {
+      "id": 21,
+      "name": "Best Documentary Short",
+      "nominees": [
+        { "id": 1, "name": "The Barber of Little Rock", "image": "barberoflittlerock.jpg" },
+        { "id": 2, "name": "Nǎi Nai & Wài Pó", "image": "nainaiwaipo.jpg" },
+        { "id": 3, "name": "Last Song from Kabul", "image": "lastsongfromkabul.jpg" },
+        { "id": 4, "name": "Between Earth and Sky", "image": "betweenearthandsky.jpg" },
+        { "id": 5, "name": "The ABCs of Book Banning", "image": "abcsofbookbanning.jpg" }
+      ]
+    },
+
+    {
+      "id": 22,
+      "name": "Best Live Action Short",
+      "nominees": [
+        { "id": 1, "name": "Red, White and Blue", "image": "redwhiteandblue.jpg" },
+        { "id": 2, "name": "The After", "image": "theafter.jpg" },
+        { "id": 3, "name": "Knight of Fortune", "image": "knightoffortune.jpg" },
+        { "id": 4, "name": "Invincible", "image": "invincible.jpg" },
+        { "id": 5, "name": "Yellow", "image": "yellow.jpg" }
+      ]
+    },
+
+    {
+      "id": 23,
+      "name": "Best Animated Short",
+      "nominees": [
+        { "id": 1, "name": "WAR IS OVER! Inspired by the Music of John & Yoko", "image": "warisover.jpg" },
+        { "id": 2, "name": "Pachyderme", "image": "pachyderme.jpg" },
+        { "id": 3, "name": "Our Uniform", "image": "ouruniform.jpg" },
+        { "id": 4, "name": "Ninety-Five Senses", "image": "ninetysenses.jpg" },
+        { "id": 5, "name": "Humo", "image": "humo.jpg" }
+      ]
+    }
+  ]
+}

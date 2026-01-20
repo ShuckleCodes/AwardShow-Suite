@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Oscar Predictions - Submit Your Picks</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <link href="./sources/frontend/css/guest.css" rel="stylesheet" type="text/css">
+    <link rel="shortcut icon" href="./sources/frontend/tm.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"></script>
+    <div id="app">
+        <v-app dark class="oscar-app">
+            <v-app-bar app color="#1a1a1a" elevation="4">
+                <v-spacer></v-spacer>
+                <span class="oscar-title">Oscar Predictions</span>
+                <v-spacer></v-spacer>
+                <v-chip
+                    small
+                    :color="predictionsLocked ? 'error' : 'success'"
+                    class="ml-2"
+                >
+                    {{ predictionsLocked ? 'Locked' : 'Open' }}
+                </v-chip>
+            </v-app-bar>
+
+            <v-main>
+                <v-container fluid class="pa-4">
+                    <!-- Locked Message -->
+                    <v-alert
+                        v-if="predictionsLocked && !submitted"
+                        type="warning"
+                        prominent
+                        class="mb-4"
+                    >
+                        <v-row align="center">
+                            <v-col class="grow">
+                                Predictions are currently locked. Please wait for the admin to unlock them.
+                            </v-col>
+                        </v-row>
+                    </v-alert>
+
+                    <!-- Success Message -->
+                    <v-alert
+                        v-if="submitted"
+                        type="success"
+                        prominent
+                        class="mb-4"
+                    >
+                        <v-row align="center">
+                            <v-col class="grow">
+                                <strong>{{ selectedGuest ? selectedGuest.name : '' }}</strong>, your predictions have been saved!
+                                <br>
+                                <small>Good luck! You can update your picks anytime before they're locked.</small>
+                            </v-col>
+                        </v-row>
+                    </v-alert>
+
+                    <!-- Guest Selection Section -->
+                    <v-card class="mb-4 oscar-card">
+                        <v-card-title class="gold-text">
+                            <v-icon left color="#d4af37">mdi-account</v-icon>
+                            Select Your Name
+                        </v-card-title>
+                        <v-card-text>
+                            <v-select
+                                v-model="selectedGuestId"
+                                :items="guestList"
+                                item-text="name"
+                                item-value="id"
+                                label="Who are you?"
+                                outlined
+                                dense
+                                prepend-inner-icon="mdi-account"
+                                @change="loadGuestPredictions"
+                                :disabled="predictionsLocked"
+                            >
+                                <template v-slot:item="{ item }">
+                                    {{ item.name }}
+                                    <v-chip
+                                        v-if="item.hasPredictions"
+                                        x-small
+                                        color="success"
+                                        class="ml-2"
+                                    >
+                                        Has picks
+                                    </v-chip>
+                                </template>
+                            </v-select>
+                            <div v-if="selectedGuest && selectedGuest.rooms && selectedGuest.rooms.length > 0" class="mt-2">
+                                <span class="grey--text text-caption">Your rooms: </span>
+                                <v-chip
+                                    v-for="roomCode in selectedGuest.rooms"
+                                    :key="roomCode"
+                                    x-small
+                                    class="mr-1"
+                                >
+                                    {{ getRoomName(roomCode) }}
+                                </v-chip>
+                            </div>
+                        </v-card-text>
+                    </v-card>
+
+                    <!-- Predictions Section -->
+                    <v-card
+                        v-for="award in awards"
+                        :key="award.id"
+                        class="mb-4 oscar-card"
+                        :class="{ 'completed-award': predictions[award.id] }"
+                        v-if="selectedGuestId"
+                    >
+                        <v-card-title class="gold-text">
+                            <v-icon left color="#d4af37">mdi-trophy</v-icon>
+                            {{ award.name }}
+                            <v-spacer></v-spacer>
+                            <v-chip
+                                v-if="predictions[award.id]"
+                                small
+                                color="success"
+                            >
+                                <v-icon small left>mdi-check</v-icon>
+                                Selected
+                            </v-chip>
+                        </v-card-title>
+                        <v-card-text>
+                            <v-radio-group
+                                v-model="predictions[award.id]"
+                                :disabled="predictionsLocked || submitted"
+                                class="nominee-group"
+                            >
+                                <v-radio
+                                    v-for="nominee in award.nominees"
+                                    :key="nominee.id"
+                                    :value="nominee.id"
+                                    class="nominee-radio mb-2"
+                                >
+                                    <template v-slot:label>
+                                        <span class="nominee-name">{{ nominee.name }}</span>
+                                    </template>
+                                </v-radio>
+                            </v-radio-group>
+                        </v-card-text>
+                    </v-card>
+
+                    <!-- Submit Button -->
+                    <v-btn
+                        v-if="selectedGuestId"
+                        block
+                        x-large
+                        color="#d4af37"
+                        class="submit-btn mb-4"
+                        :disabled="!canSubmit || predictionsLocked"
+                        @click="submitPredictions"
+                        :loading="submitting"
+                    >
+                        <v-icon left>mdi-content-save</v-icon>
+                        Save Predictions
+                    </v-btn>
+
+                    <!-- Progress -->
+                    <v-card class="oscar-card" v-if="selectedGuestId">
+                        <v-card-text>
+                            <div class="text-center mb-2">
+                                Progress: {{ completedCount }} / {{ awards.length }} categories
+                            </div>
+                            <v-progress-linear
+                                :value="progressPercent"
+                                color="#d4af37"
+                                height="10"
+                                rounded
+                            ></v-progress-linear>
+                        </v-card-text>
+                    </v-card>
+                </v-container>
+            </v-main>
+        </v-app>
+    </div>
+    <script src="./sources/frontend/js/reconnecting-websocket.min.js"></script>
+    <script src="./sources/frontend/js/guest.js"></script>
+</body>
+</html>

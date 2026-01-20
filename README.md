@@ -1,5 +1,11 @@
-# Taskmaster Suite
-Nice to see you, yes it is! Welcome to the Taskmaster Suite project, a fun little private project which shall allow you to control a screen for an audience using a controller website, much like Alex Horne and his international counterparts are doing it on the famous TV show Taskmaster.
+# Oscar Suite
+Oscar season is always coming up.  This fun little app takes the work done by others to create a Taskmaster Suite, and customizes it for an Oscar party.  
+
+In particular, look to https://github.com/LocoMH/TaskmasterSuite for the original Taskmaster Suite, particularly if you are looking to customize for a different purpose.  I took many of their features out, as they weren't relevant to the purposes I had.
+
+
+
+#TODO:  UPDATE THESE NOTES.  
 
 ## Quickstart
 All you need is
