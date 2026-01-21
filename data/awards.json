@@ -108,7 +108,7 @@
         { "id": 1, "name": "KPop Demon Hunters", "image": "kpopdemonhunters.jpg" },
         { "id": 2, "name": "Elio", "image": "elio.jpg" },
         { "id": 3, "name": "Arco", "image": "arco.jpg" },
-        { "id": 4, "name": "Demon Slayer: Infinity Castle", "image": "demonslayerinfinitycastle.jpg" },
+        { "id": 4, "name": "Demon Slayer: Kimetsu no Yaiba Infinity Castle", "image": "demonslayerinfinitycastle.jpg" },
         { "id": 5, "name": "Zootopia 2", "image": "zootopia2.jpg" }
       ]
     },
@@ -144,7 +144,7 @@
         { "id": 1, "name": "Golden (KPop Demon Hunters)", "image": "kpopdemonhunters.jpg" },
         { "id": 2, "name": "I Lied to You (Sinners)", "image": "sinners.jpg" },
         { "id": 3, "name": "The Girl in the Bubble (Wicked: For Good)", "image": "wickedforgood.jpg" },
-        { "id": 4, "name": "Dear Me (Diane Warren: Relentless)", "image": "dianewarrenrelentless.jpg" },
+        { "id": 4, "name": "Dear Me (Diane Warren: Relentless)", "image": "relentless.jpg" },
         { "id": 5, "name": "Train Dreams (Train Dreams)", "image": "traindreams.jpg" }
       ]
     },
@@ -237,11 +237,11 @@
       "id": 20,
       "name": "Best Documentary Feature",
       "nominees": [
-        { "id": 1, "name": "Diane Warren: Relentless", "image": "dianewarrenrelentless.jpg" },
-        { "id": 2, "name": "Still Working", "image": "stillworking.jpg" },
-        { "id": 3, "name": "Silver Dollar Road", "image": "silverdollarroad.jpg" },
-        { "id": 4, "name": "Mountain Queen", "image": "mountainqueen.jpg" },
-        { "id": 5, "name": "Union", "image": "union.jpg" }
+        { "id": 1, "name": "The Perfect Neighbor", "image": "perfectneighbor.jpg" },
+        { "id": 2, "name": "The Alabama Solution", "image": "alabama.jpg" },
+        { "id": 3, "name": "Seeds", "image": "seeds.jpg" },
+        { "id": 4, "name": "Cutting Through Rocks", "image": "cuttingthroughrocks.jpg" },
+        { "id": 5, "name": "2000 Meters to Andriivka", "image": "2000meters.jpg" }
       ]
     },
 
@@ -249,11 +249,11 @@
       "id": 21,
       "name": "Best Documentary Short",
       "nominees": [
-        { "id": 1, "name": "The Barber of Little Rock", "image": "barberoflittlerock.jpg" },
-        { "id": 2, "name": "Nǎi Nai & Wài Pó", "image": "nainaiwaipo.jpg" },
-        { "id": 3, "name": "Last Song from Kabul", "image": "lastsongfromkabul.jpg" },
-        { "id": 4, "name": "Between Earth and Sky", "image": "betweenearthandsky.jpg" },
-        { "id": 5, "name": "The ABCs of Book Banning", "image": "abcsofbookbanning.jpg" }
+        { "id": 1, "name": "All the Empty Rooms", "image": "emptyrooms.jpg" },
+        { "id": 2, "name": "All the Walls Came Down", "image": "allthewallscamedown.jpg" },
+        { "id": 3, "name": "Armed Only with a Camera: The Life and Death of Brent Renaud", "image": "armedwithcamera.jpg" },
+        { "id": 4, "name": "Chasing Time", "image": "chasingtime.jpg" },
+        { "id": 5, "name": "The Devil is Busy", "image": "thedevilisbusy.jpg" }
       ]
     },
 
@@ -261,11 +261,11 @@
       "id": 22,
       "name": "Best Live Action Short",
       "nominees": [
-        { "id": 1, "name": "Red, White and Blue", "image": "redwhiteandblue.jpg" },
-        { "id": 2, "name": "The After", "image": "theafter.jpg" },
-        { "id": 3, "name": "Knight of Fortune", "image": "knightoffortune.jpg" },
-        { "id": 4, "name": "Invincible", "image": "invincible.jpg" },
-        { "id": 5, "name": "Yellow", "image": "yellow.jpg" }
+        { "id": 1, "name": "Extremist", "image": "extremist.jpg" },
+        { "id": 2, "name": "Pantyhose", "image": "pantyhose.jpg" },
+        { "id": 3, "name": "Rock, Paper, Scissors", "image": "rockpaperscissors.jpg" },
+        { "id": 4, "name": "The Singers", "image": "thesingers.jpg" },
+        { "id": 5, "name": "Two People Exchanging Saliva", "image": "twopeople.jpg" }
       ]
     },
 
@@ -273,11 +273,11 @@
       "id": 23,
       "name": "Best Animated Short",
       "nominees": [
-        { "id": 1, "name": "WAR IS OVER! Inspired by the Music of John & Yoko", "image": "warisover.jpg" },
-        { "id": 2, "name": "Pachyderme", "image": "pachyderme.jpg" },
-        { "id": 3, "name": "Our Uniform", "image": "ouruniform.jpg" },
-        { "id": 4, "name": "Ninety-Five Senses", "image": "ninetysenses.jpg" },
-        { "id": 5, "name": "Humo", "image": "humo.jpg" }
+        { "id": 1, "name": "Cardboard", "image": "cardboard.jpg" },
+        { "id": 2, "name": "Éiru", "image": "eiru.jpg" },
+        { "id": 3, "name": "Hurikán", "image": "hurikan.jpg" },
+        { "id": 4, "name": "Retirement Plan", "image": "retirementplan.jpg" },
+        { "id": 5, "name": "The Shyness of Trees", "image": "theshynessoftrees.jpg" }
       ]
     }
   ]

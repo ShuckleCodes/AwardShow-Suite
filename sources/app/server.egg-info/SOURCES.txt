@@ -9,4 +9,5 @@ tm_suite/__init__.py
 tm_suite/db.py
 tm_suite/helper.py
 tm_suite/loader.py
+tm_suite/oscar_db.py
 tm_suite/server.py

@@ -6,7 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
     <link href="./sources/frontend/css/guest.css" rel="stylesheet" type="text/css">
-    <link rel="shortcut icon" href="./sources/frontend/tm.ico">
+    <link rel="shortcut icon" href="./sources/frontend/oscar.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 </head>
@@ -102,6 +102,41 @@
                                 >
                                     {{ getRoomName(roomCode) }}
                                 </v-chip>
+                            </div>
+
+                            <!-- Profile Picture Upload -->
+                            <div v-if="selectedGuest" class="mt-4">
+                                <v-divider class="mb-4"></v-divider>
+                                <div class="d-flex align-center">
+                                    <v-avatar size="80" class="mr-4" color="#2a2a2a">
+                                        <v-img
+                                            v-if="selectedGuest.photo"
+                                            :src="'/home/data/' + selectedGuest.photo"
+                                        ></v-img>
+                                        <v-icon v-else size="40" color="#d4af37">mdi-account</v-icon>
+                                    </v-avatar>
+                                    <div>
+                                        <div class="text-caption grey--text mb-2">Profile Picture</div>
+                                        <v-btn
+                                            small
+                                            outlined
+                                            color="#d4af37"
+                                            @click="$refs.photoInput.click()"
+                                            :loading="uploadingPhoto"
+                                            :disabled="predictionsLocked"
+                                        >
+                                            <v-icon left small>mdi-camera</v-icon>
+                                            {{ selectedGuest.photo ? 'Change Photo' : 'Upload Photo' }}
+                                        </v-btn>
+                                        <input
+                                            ref="photoInput"
+                                            type="file"
+                                            accept="image/*"
+                                            style="display: none"
+                                            @change="uploadPhoto"
+                                        >
+                                    </div>
+                                </div>
                             </div>
                         </v-card-text>
                     </v-card>

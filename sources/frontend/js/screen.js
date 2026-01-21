@@ -164,7 +164,7 @@
             innerScoreboard.appendChild(card)
         })
 
-        positionCards(false)  // Position without animation initially
+        positionCards(false)  // Position horizontally
         scoresInitialized = true
     }
 
@@ -350,7 +350,7 @@
             guest.displayScore = 0
         })
 
-        // Reinitialize scoreboard to show 0 scores initially
+        // Reinitialize scoreboard with cards visible
         initializeScoreboard()
 
         // Update room name display
@@ -367,7 +367,7 @@
 
         showDiv("scoreboard")
 
-        // Delay animation slightly for visual effect
+        // Start score animation after a brief delay
         setTimeout(function() {
             animateScores()
         }, 500)
@@ -386,20 +386,46 @@
         var grid = document.querySelector("#nominees-grid")
         grid.innerHTML = ""
 
-        award.nominees.forEach(function(nominee) {
+        award.nominees.forEach(function(nominee, index) {
             var card = document.createElement("div")
             card.classList.add("nominee-card")
             card.setAttribute("data-nominee-id", nominee.id)
 
             var imageSrc = nominee.image ? "/home/data/nominees/" + nominee.image : "/home/data/Backgrounds/oscar.png"
 
+            // Find guests who predicted this nominee
+            var predictorsHtml = '<div class="nominee-predictors">'
+            guests.forEach(function(guest) {
+                if (guest.predictions && guest.predictions[awardId] == nominee.id) {
+                    var photoSrc = guest.photo ? "/home/data/" + guest.photo : "/home/data/Backgrounds/oscar.png"
+                    predictorsHtml += '<img class="predictor-avatar" src="' + photoSrc + '" title="' + guest.name + '" onerror="this.src=\'/home/data/Backgrounds/oscar.png\'">'
+                }
+            })
+            predictorsHtml += '</div>'
+
             card.innerHTML =
                 '<div class="trophy-icon">🏆</div>' +
                 '<img class="nominee-image" src="' + imageSrc + '" onerror="this.src=\'/home/data/Backgrounds/oscar.png\'">' +
-                '<p class="nominee-name">' + nominee.name + '</p>'
+                '<p class="nominee-name">' + nominee.name + '</p>' +
+                predictorsHtml
 
             grid.appendChild(card)
+
+            // Animate each nominee with 2 second delay between each
+            setTimeout(function() {
+                card.classList.add("animate-in")
+            }, index * 2000)
         })
+
+        // Animate predictor avatars after all nominees have appeared
+        var predictorsDelay = (award.nominees.length - 1) * 2000 + 1000
+        setTimeout(function() {
+            document.querySelectorAll(".predictor-avatar").forEach(function(avatar, index) {
+                setTimeout(function() {
+                    avatar.classList.add("animate-in")
+                }, index * 100)
+            })
+        }, predictorsDelay)
 
         showDiv("award")
     }
@@ -432,7 +458,7 @@
     function showDiv(name) {
         document.querySelector("#div-" + name).style.display = "block"
         document.querySelectorAll(".div-containers").forEach(function(cont) {
-            if (!cont.id.includes(name) && !cont.id.includes("taskmaster")) {
+            if (!cont.id.includes(name)) {
                 cont.style.display = "none"
             }
         })
@@ -446,6 +472,14 @@
             scoresTable.style.display = "block"
         } else {
             scoresTable.style.display = "none"
+        }
+
+        // Show/hide room selector only on scoreboard
+        var roomSelector = document.querySelector("#room-selector")
+        if (name === "scoreboard" && rooms.length > 0) {
+            roomSelector.style.display = "block"
+        } else {
+            roomSelector.style.display = "none"
         }
     }
 
@@ -473,6 +507,7 @@
     loadRooms()
     loadGuests()
     loadAppState()
+    showDiv("taskmaster")  // Default to logo screen on load
 
     // WebSocket connection
     var ws = new ReconnectingWebSocket("ws://" + window.location.host + "/ws")

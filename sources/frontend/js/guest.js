@@ -13,6 +13,7 @@ new Vue({
             predictionsLocked: false,
             submitted: false,
             submitting: false,
+            uploadingPhoto: false,
             websocket: null
         }
     },
@@ -176,6 +177,45 @@ new Vue({
         ping() {
             if (this.websocket && this.websocket.readyState === WebSocket.OPEN) {
                 this.websocket.send('__ping__')
+            }
+        },
+        async uploadPhoto(event) {
+            const file = event.target.files[0]
+            if (!file || !this.selectedGuestId) return
+
+            this.uploadingPhoto = true
+
+            try {
+                // Upload the file
+                const formData = new FormData()
+                formData.append('file', file)
+
+                const uploadResponse = await axios.post('/upload/photo', formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                })
+
+                const photoPath = uploadResponse.data.path
+
+                // Update guest with new photo path
+                await axios.put('/data/guests/' + this.selectedGuestId, {
+                    photo: photoPath
+                })
+
+                // Update local guest data
+                const guest = this.guestList.find(g => g.id === this.selectedGuestId)
+                if (guest) {
+                    guest.photo = photoPath
+                }
+
+                // Force reactivity update
+                this.$forceUpdate()
+            } catch (e) {
+                console.error('Error uploading photo:', e)
+                alert('Error uploading photo. Please try again.')
+            } finally {
+                this.uploadingPhoto = false
+                // Clear the input so the same file can be selected again
+                event.target.value = ''
             }
         }
     },

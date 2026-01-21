@@ -58,4 +58,4 @@ exe = EXE(pyz,
           target_arch=None,
           codesign_identity=None,
           entitlements_file=None, 
-          icon='../frontend/tm.ico')
+          icon='../frontend/oscar.ico')
