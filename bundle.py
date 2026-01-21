@@ -33,7 +33,7 @@ def clear_directories_containing(search):
 def bundle_windows(version):
 
     remove_file_or_directory("dist")
-    clear_directories_containing("TaskmasterSuite")
+    clear_directories_containing("OscarSuite")
 
     subprocess.run(["pyinstaller", "sources/app/server.spec"])
 
@@ -45,13 +45,13 @@ def bundle_windows(version):
     dir_util.copy_tree("sources/db", "dist/sources/db")
     dir_util.copy_tree("data", "dist/data")
 
-    dir_util.copy_tree("dist", "TaskmasterSuite-Windows-" + version)
+    dir_util.copy_tree("dist", "OscarSuite-Windows-" + version)
 
     archive_util.make_zipfile(
-        "TaskmasterSuite-Windows-" + version, "TaskmasterSuite-Windows-" + version)
+        "OscarSuite-Windows-" + version, "OscarSuite-Windows-" + version)
 
     remove_file_or_directory("dist")
-    clear_directories_containing("TaskmasterSuite-Windows-" + version)
+    clear_directories_containing("OscarSuite-Windows-" + version)
 
 
 @click.command()

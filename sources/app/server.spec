@@ -4,7 +4,7 @@
 block_cipher = None
 
 
-a = Analysis(['tm_suite/server.py'],
+a = Analysis(['oscar_suite/server.py'],
              pathex=['.'],
              binaries=[],
              datas=[],

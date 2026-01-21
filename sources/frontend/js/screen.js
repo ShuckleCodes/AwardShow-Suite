@@ -511,7 +511,7 @@
         }
 
         // Start/stop random category display on logo screen
-        if (name === "taskmaster") {
+        if (name === "logo") {
             setTimeout(startRandomCategoryDisplay, 10000)
         } else {
             stopRandomCategoryDisplay()
@@ -542,7 +542,7 @@
     loadRooms()
     loadGuests()
     loadAppState()
-    showDiv("taskmaster")  // Default to logo screen on load
+    showDiv("logo")  // Default to logo screen on load
 
     // Random category display on logo screen
     var randomCategoryInterval = null
@@ -667,14 +667,14 @@
             }
 
             document.getElementById('video').addEventListener('ended', function(e) {
-                showDiv("taskmaster")
+                showDiv("logo")
             }, false)
 
             document.getElementById('video').addEventListener('playing', function(e) {
                 showDiv("video")
             }, false)
-        } else if (action == "showTaskmaster") {
-            showDiv("taskmaster")
+        } else if (action == "showLogo") {
+            showDiv("logo")
         } else if (action == "resetScores") {
             scoresInitialized = false
             window.location.reload(true)

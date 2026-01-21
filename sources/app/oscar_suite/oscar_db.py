@@ -1,5 +1,5 @@
 from tinydb import TinyDB, Query
-from tm_suite import helper
+from oscar_suite import helper
 import ujson
 import os
 

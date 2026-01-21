@@ -3,8 +3,8 @@ build
 dist
 __pycache__
 server.exe
-TaskmasterSuite*.zip
-TaskmasterSuite
+OscarSuite*.zip
+OscarSuite
 Claude.md
 2026/
 data/2025Awards.json

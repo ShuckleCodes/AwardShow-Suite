@@ -1,2 +1,0 @@
-[console_scripts]
-serve = tm_suite.server:start_server
