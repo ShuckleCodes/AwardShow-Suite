@@ -20,6 +20,57 @@
                             linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             }
 
+            #random-category-display {
+                position: absolute;
+                bottom: 40px;
+                left: 50%;
+                transform: translateX(-50%);
+                text-align: center;
+                opacity: 0;
+                transition: opacity 0.8s ease;
+            }
+
+            #random-category-display.visible {
+                opacity: 1;
+            }
+
+            #random-category-nominees {
+                display: flex;
+                justify-content: center;
+                gap: 22px;
+                flex-wrap: wrap;
+                max-width: 2100px;
+            }
+
+            .random-nominee-card {
+                background: linear-gradient(145deg, rgba(42,42,42,0.9) 0%, rgba(31,31,31,0.9) 100%);
+                border: 3px solid #3a3a3a;
+                border-radius: 15px;
+                padding: 15px 22px;
+                text-align: center;
+            }
+
+            .random-nominee-card img {
+                width: 120px;
+                height: 180px;
+                border-radius: 8px;
+                object-fit: cover;
+                border: 3px solid #d4af37;
+                margin-bottom: 12px;
+                background: #333;
+            }
+
+            .random-nominee-card .name {
+                font-family: 'Jost', 'Futura PT', sans-serif;
+                font-weight: 500;
+                font-size: 1.35rem;
+                color: #ffffff;
+                max-width: 150px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
             #div-award {
                 background: url('/home/data/Backgrounds/bg-nominees.png') center center / cover no-repeat,
                             linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
@@ -144,7 +195,13 @@
                 display: none;
                 font-size: 3rem;
                 color: #1a1a1a;
-                margin-bottom: 10px;
+                margin-bottom: 10px;              
+            }
+            
+            .oscar-icon {
+                background: #4b4848;
+                border-radius: 5px;
+                
             }
 
             .nominee-image {
@@ -419,6 +476,11 @@
                         Who will win big tonight?
                     </div>
                 </div>
+            </div>
+            <!-- Random category display -->
+            <div id="random-category-display">
+                <h2 id="random-category-title" class="title-box" style="font-family: 'Jost', 'Futura PT', sans-serif; font-weight: 600; font-size: 3rem; color: #d4af37; margin: 0 0 30px 0; text-transform: uppercase; letter-spacing: 0.1em;"></h2>
+                <div id="random-category-nominees"></div>
             </div>
         </div>
 

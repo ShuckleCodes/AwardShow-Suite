@@ -9,7 +9,10 @@ from tm_suite.loader import generate_files
 from tm_suite import helper
 from tm_suite import db
 from tm_suite import oscar_db
-import easygui
+try:
+    import easygui
+except ImportError:
+    easygui = None  # Not available on server
 import ujson
 import asyncio
 import os
@@ -297,15 +300,17 @@ async def start_file_generation():
 
 
 def show_window():
-    easygui.msgbox("Oscar Predictions App launched!\n\nTo use the application, open a browser.\n\nFor guests to submit predictions:\n\nhttp://" + helper.get_ip() + ":8001/home/guest.html\n\nFor the audience display screen:\n\nhttp://" + helper.get_ip() + ":8001/home/screen.html\n\nFor the admin control panel:\n\nhttp://" + helper.get_ip() +
-                   ":8001/home/assistant.html\n\nYou can open the websites on any device (including Android/iOS) in your private WiFi network.\n\nNote that closing this window does not stop the application. Closing the black command prompt window does.", "Successfully started")
+    if easygui:
+        easygui.msgbox("Oscar Predictions App launched!\n\nTo use the application, open a browser.\n\nFor guests to submit predictions:\n\nhttp://" + helper.get_ip() + ":8001/home/guest.html\n\nFor the audience display screen:\n\nhttp://" + helper.get_ip() + ":8001/home/screen.html\n\nFor the admin control panel:\n\nhttp://" + helper.get_ip() +
+                       ":8001/home/assistant.html\n\nYou can open the websites on any device (including Android/iOS) in your private WiFi network.\n\nNote that closing this window does not stop the application. Closing the black command prompt window does.", "Successfully started")
 
 
 @app.on_event("startup")
 async def startup_event():
-    file_generation_thread = threading.Timer(0, show_window)
-    file_generation_thread.daemon = True
-    file_generation_thread.start()
+    if easygui:
+        file_generation_thread = threading.Timer(0, show_window)
+        file_generation_thread.daemon = True
+        file_generation_thread.start()
 
     loop = asyncio.get_running_loop()
     loop.create_task(start_file_generation())

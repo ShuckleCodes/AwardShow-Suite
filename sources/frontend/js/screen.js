@@ -154,9 +154,11 @@
         innerScoreboard.innerHTML = ""
         guestElements = {}
 
-        // Sort by score descending for initial positions
+        // Sort by score descending, then alphabetically
         var sortedGuests = [...guests].sort(function(a, b) {
-            return (b.displayScore || 0) - (a.displayScore || 0)
+            var scoreDiff = (b.displayScore || 0) - (a.displayScore || 0)
+            if (scoreDiff !== 0) return scoreDiff
+            return (a.name || '').localeCompare(b.name || '')
         })
 
         // Calculate positions first
@@ -227,10 +229,10 @@
             headerRow.appendChild(th)
         })
 
-        // Build body rows
+        // Build body rows - sort alphabetically
         tbody.innerHTML = ""
         var sortedGuests = [...guests].sort(function(a, b) {
-            return (b.score || 0) - (a.score || 0)
+            return (a.name || '').localeCompare(b.name || '')
         })
 
         sortedGuests.forEach(function(guest) {
@@ -268,12 +270,14 @@
         })
     }
 
-    // Position cards based on current scores
+    // Position cards based on current scores, then alphabetically
     function positionCards(animate) {
         var sortedGuests = [...guests].sort(function(a, b) {
             var scoreA = animate ? (a.score || 0) : (a.displayScore || 0)
             var scoreB = animate ? (b.score || 0) : (b.displayScore || 0)
-            return scoreB - scoreA
+            var scoreDiff = scoreB - scoreA
+            if (scoreDiff !== 0) return scoreDiff
+            return (a.name || '').localeCompare(b.name || '')
         })
 
         var maxScore = sortedGuests.length > 0 ? (sortedGuests[0].score || 0) : 0
@@ -428,7 +432,7 @@
             predictorsHtml += '</div>'
 
             card.innerHTML =
-                '<div class="trophy-icon">🏆</div>' +
+                '<div class="trophy-icon"><img class="oscar-icon" src="/home/data/Backgrounds/OscarIcon.png" ></div>' +
                 '<img class="nominee-image" src="' + imageSrc + '" onerror="this.src=\'/home/data/Backgrounds/oscar.png\'">' +
                 '<p class="nominee-name">' + nominee.name + '</p>' +
                 predictorsHtml
@@ -505,6 +509,13 @@
         } else {
             roomSelector.style.display = "none"
         }
+
+        // Start/stop random category display on logo screen
+        if (name === "taskmaster") {
+            setTimeout(startRandomCategoryDisplay, 10000)
+        } else {
+            stopRandomCategoryDisplay()
+        }
     }
 
     var audio = null
@@ -532,6 +543,71 @@
     loadGuests()
     loadAppState()
     showDiv("taskmaster")  // Default to logo screen on load
+
+    // Random category display on logo screen
+    var randomCategoryInterval = null
+    var lastRandomAwardIndex = -1
+
+    function showRandomCategory() {
+        if (awards.length === 0) return
+
+        var container = document.querySelector("#random-category-display")
+        var titleEl = document.querySelector("#random-category-title")
+        var nomineesEl = document.querySelector("#random-category-nominees")
+
+        // Pick a random award (different from last one if possible)
+        var randomIndex
+        if (awards.length > 1) {
+            do {
+                randomIndex = Math.floor(Math.random() * awards.length)
+            } while (randomIndex === lastRandomAwardIndex)
+        } else {
+            randomIndex = 0
+        }
+        lastRandomAwardIndex = randomIndex
+
+        var award = awards[randomIndex]
+
+        // Fade out
+        container.classList.remove("visible")
+
+        setTimeout(function() {
+            // Update content
+            titleEl.textContent = award.name
+
+            nomineesEl.innerHTML = ""
+            award.nominees.forEach(function(nominee) {
+                var card = document.createElement("div")
+                card.classList.add("random-nominee-card")
+
+                var imageSrc = nominee.image ? "/home/data/nominees/" + nominee.image : "/home/data/Backgrounds/oscar.png"
+
+                card.innerHTML =
+                    '<img src="' + imageSrc + '" onerror="this.src=\'/home/data/Backgrounds/oscar.png\'">' +
+                    '<div class="name">' + nominee.name + '</div>'
+
+                nomineesEl.appendChild(card)
+            })
+
+            // Fade in
+            container.classList.add("visible")
+        }, 800)
+    }
+
+    function startRandomCategoryDisplay() {
+        if (randomCategoryInterval) clearInterval(randomCategoryInterval)
+        showRandomCategory()
+        randomCategoryInterval = setInterval(showRandomCategory, 40000)
+    }
+
+    function stopRandomCategoryDisplay() {
+        if (randomCategoryInterval) {
+            clearInterval(randomCategoryInterval)
+            randomCategoryInterval = null
+        }
+        var container = document.querySelector("#random-category-display")
+        container.classList.remove("visible")
+    }
 
     // WebSocket connection
     var ws = new ReconnectingWebSocket("ws://" + window.location.host + "/ws")
