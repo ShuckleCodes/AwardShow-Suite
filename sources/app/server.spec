@@ -4,7 +4,7 @@
 block_cipher = None
 
 
-a = Analysis(['oscar_suite/server.py'],
+a = Analysis(['awardshow_suite/server.py'],
              pathex=['.'],
              binaries=[],
              datas=[],
@@ -58,4 +58,4 @@ exe = EXE(pyz,
           target_arch=None,
           codesign_identity=None,
           entitlements_file=None, 
-          icon='../frontend/oscar.ico')
+          icon='../frontend/trophy.ico')

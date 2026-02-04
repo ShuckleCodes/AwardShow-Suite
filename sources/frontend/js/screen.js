@@ -1,5 +1,5 @@
 /*
- * Oscar Predictions - Display Screen
+ * Award Show Predictions - Display Screen
  */
 
 (function() {
@@ -138,10 +138,10 @@
         card.style.transition = "none"  // Override CSS - added later after positioning
         card.style.left = leftPos + "px"  // Set position before adding to DOM
 
-        var photoSrc = guest.photo ? "/home/data/" + guest.photo : "/home/data/Backgrounds/oscar.png"
+        var photoSrc = guest.photo ? "/home/data/" + guest.photo : "/home/data/Backgrounds/trophy.png"
 
         card.innerHTML =
-            '<img class="guest-photo" src="' + photoSrc + '" onerror="this.src=\'/home/data/Backgrounds/oscar.png\'">' +
+            '<img class="guest-photo" src="' + photoSrc + '" onerror="this.src=\'/home/data/Backgrounds/trophy.png\'">' +
             '<div class="guest-name">' + guest.name + '</div>' +
             '<div class="guest-score">' + (guest.displayScore || 0) + '</div>'
 
@@ -419,21 +419,21 @@
             card.classList.add("nominee-card")
             card.setAttribute("data-nominee-id", nominee.id)
 
-            var imageSrc = nominee.image ? "/home/data/nominees/" + nominee.image : "/home/data/Backgrounds/oscar.png"
+            var imageSrc = nominee.image ? "/home/data/nominees/" + nominee.image : "/home/data/Backgrounds/trophy.png"
 
             // Find guests who predicted this nominee
             var predictorsHtml = '<div class="nominee-predictors">'
             guests.forEach(function(guest) {
                 if (guest.predictions && guest.predictions[awardId] == nominee.id) {
-                    var photoSrc = guest.photo ? "/home/data/" + guest.photo : "/home/data/Backgrounds/oscar.png"
-                    predictorsHtml += '<img class="predictor-avatar" src="' + photoSrc + '" title="' + guest.name + '" onerror="this.src=\'/home/data/Backgrounds/oscar.png\'">'
+                    var photoSrc = guest.photo ? "/home/data/" + guest.photo : "/home/data/Backgrounds/trophy.png"
+                    predictorsHtml += '<img class="predictor-avatar" src="' + photoSrc + '" title="' + guest.name + '" onerror="this.src=\'/home/data/Backgrounds/trophy.png\'">'
                 }
             })
             predictorsHtml += '</div>'
 
             card.innerHTML =
-                '<div class="trophy-icon"><img class="oscar-icon" src="/home/data/Backgrounds/OscarIcon.png" ></div>' +
-                '<img class="nominee-image" src="' + imageSrc + '" onerror="this.src=\'/home/data/Backgrounds/oscar.png\'">' +
+                '<div class="trophy-icon"><img class="trophy-icon-img" src="/home/data/Backgrounds/trophyIcon.png" ></div>' +
+                '<img class="nominee-image" src="' + imageSrc + '" onerror="this.src=\'/home/data/Backgrounds/trophy.png\'">' +
                 '<p class="nominee-name">' + nominee.name + '</p>' +
                 predictorsHtml
 
@@ -580,10 +580,10 @@
                 var card = document.createElement("div")
                 card.classList.add("random-nominee-card")
 
-                var imageSrc = nominee.image ? "/home/data/nominees/" + nominee.image : "/home/data/Backgrounds/oscar.png"
+                var imageSrc = nominee.image ? "/home/data/nominees/" + nominee.image : "/home/data/Backgrounds/trophy.png"
 
                 card.innerHTML =
-                    '<img src="' + imageSrc + '" onerror="this.src=\'/home/data/Backgrounds/oscar.png\'">' +
+                    '<img src="' + imageSrc + '" onerror="this.src=\'/home/data/Backgrounds/trophy.png\'">' +
                     '<div class="name">' + nominee.name + '</div>'
 
                 nomineesEl.appendChild(card)

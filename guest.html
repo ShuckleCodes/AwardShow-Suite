@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Oscar Predictions - Submit Your Picks</title>
+    <title>Award Show Predictions - Submit Your Picks</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
     <link href="./sources/frontend/css/guest.css" rel="stylesheet" type="text/css">
-    <link rel="shortcut icon" href="./sources/frontend/oscar.ico">
+    <link rel="shortcut icon" href="./sources/frontend/trophy.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 </head>
@@ -15,10 +15,10 @@
     <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"></script>
     <div id="app">
-        <v-app dark class="oscar-app">
+        <v-app dark class="awardshow-app">
             <v-app-bar app color="#1a1a1a" elevation="4">
                 <v-spacer></v-spacer>
-                <span class="oscar-title">Oscar Predictions</span>
+                <span class="awardshow-title">Award Show Predictions</span>
                 <v-spacer></v-spacer>
                 <v-chip
                     small
@@ -62,7 +62,7 @@
                     </v-alert>
 
                     <!-- Guest Selection Section -->
-                    <v-card class="mb-4 oscar-card">
+                    <v-card class="mb-4 awardshow-card">
                         <v-card-title class="gold-text">
                             <v-icon left color="#d4af37">mdi-account</v-icon>
                             Select Your Name
@@ -145,7 +145,7 @@
                     <v-card
                         v-for="award in awards"
                         :key="award.id"
-                        class="mb-4 oscar-card"
+                        class="mb-4 awardshow-card"
                         :class="{ 'completed-award': predictions[award.id] }"
                         v-if="selectedGuestId"
                     >
@@ -198,7 +198,7 @@
                     </v-btn>
 
                     <!-- Progress -->
-                    <v-card class="oscar-card" v-if="selectedGuestId">
+                    <v-card class="awardshow-card" v-if="selectedGuestId">
                         <v-card-text>
                             <div class="text-center mb-2">
                                 Progress: {{ completedCount }} / {{ awards.length }} categories

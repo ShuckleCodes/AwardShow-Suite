@@ -1,8 +1,8 @@
-# Oscar Suite
+# AwardShow Suite
 
-A web-based application for hosting Oscar prediction parties. Guests submit their predictions for Academy Award winners, and the app displays nominees, tracks scores, and shows a live leaderboard as winners are announced.
+An application that runs a local web server for hosting award show prediction parties. Guests submit their predictions for award winners, and the app displays nominees, tracks scores, and shows a live leaderboard as winners are announced.
 
-Based on the [Taskmaster Suite](https://github.com/LocoMH/TaskmasterSuite) project by LocoMH, customized for Oscar parties.
+Based on the [Taskmaster Suite](https://github.com/LocoMH/TaskmasterSuite) project by LocoMH, customized for award show parties.
 
 ## Features
 

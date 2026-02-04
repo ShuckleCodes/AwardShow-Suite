@@ -1,24 +1,24 @@
-/* Oscar Predictions - Guest Page Styles */
+/* Award Show Predictions - Guest Page Styles */
 
-.oscar-app {
+.awardshow-app {
     background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
     min-height: 100vh;
 }
 
-.oscar-title {
+.awardshow-title {
     font-size: 1.5rem;
     font-weight: bold;
     color: #d4af37;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-.oscar-card {
+.awardshow-card {
     background: linear-gradient(145deg, #2a2a2a 0%, #1f1f1f 100%) !important;
     border: 1px solid #3a3a3a;
     border-radius: 12px !important;
 }
 
-.oscar-card:hover {
+.awardshow-card:hover {
     border-color: #d4af37;
     box-shadow: 0 4px 20px rgba(212, 175, 55, 0.15);
 }
@@ -70,7 +70,7 @@
 
 /* Responsive adjustments */
 @media (max-width: 600px) {
-    .oscar-title {
+    .awardshow-title {
         font-size: 1.2rem;
     }
 

@@ -17,6 +17,6 @@ setup(
     license="MIT",
     entry_points='''
         [console_scripts]
-        serve = oscar_suite.server:start_server
+        serve = awardshow_suite.server:start_server
     '''
 )

@@ -13,7 +13,7 @@ new Vue({
                 offset: 0,
                 easing: 'easeInOutCubic'
             },
-            // Oscar Predictions data
+            // Award Show Predictions data
             awards: [],
             guests: [],
             rooms: [],
